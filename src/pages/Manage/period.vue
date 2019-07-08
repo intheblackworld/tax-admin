@@ -23,12 +23,9 @@ const TaxsModule = namespace('taxs')
     ManageTab
   },
 })
-export default class Period extends Vue {
+export default class Period
+ extends Vue {
   // @UsersModule.State('step') public step!: number
-
-  created() {
-    // @TODO this.searchAPI
-  }
 }
 </script>
 

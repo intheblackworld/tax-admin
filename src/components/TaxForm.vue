@@ -11,10 +11,10 @@
           <v-layout align-center>
             <v-flex xs12 md2>期別</v-flex>
             <v-flex xs12 md2>
-              <v-text-field v-model="form.year" label></v-text-field>
+              <v-text-field v-model="taxListReq.year" label></v-text-field>
             </v-flex>年
             <v-flex xs12 md2>
-              <v-radio-group v-model="form.type" :mandatory="false">
+              <v-radio-group v-model="taxListReq.type" :mandatory="false">
                 <v-layout align-center>
                   <v-flex>
                     <v-radio label="上期" :value="1"></v-radio>
@@ -48,7 +48,7 @@
           </v-layout>
         </v-container>
       </v-form>
-      <v-btn flat @click="resetCurrentForm(taxForm)">建立</v-btn>
+      <v-btn flat @click="submitForm(taxListReq)">建立</v-btn>
       <v-btn flat @click="resetCurrentForm(taxForm)">清除</v-btn>
     </v-card>
   </div>
@@ -73,12 +73,23 @@ export default class TaxForm extends mixins(CreateMixin) {
     return this.$refs.taxForm as VForm
   }
 
+  @TaxsModule.Action('getTaxList') public getTaxList!: ({}) => {}
+  @TaxsModule.Action('getTaxListUnpaid') public getTaxListUnpaid!: ({}) => {}
+
   private dateMenu = false
 
+  @TaxsModule.State('taxListForm') public taxListReq!: {
+    year: null // 年度(民國)
+    type: 1 // 上、下期(1,2)
+  }
+
+  private submitForm(reqData: any) {
+    this.getTaxList(reqData)
+    this.getTaxListUnpaid(reqData)
+  }
+
   public form = {
-    year: null, // 年度(民國)
-    type: 1, // 上、下期(1,2)
-    date: '', // 繳納期限
+    date: ''
   }
 }
 </script>

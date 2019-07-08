@@ -1,8 +1,8 @@
 <template>
   <div>
     <h3>期別管理</h3>
-    <PeriodForm/>
-    <Table :table-options="tableOptions" :items="resultData.items"/>
+    <PeriodForm @updateData="updatePeriods" />
+    <Table :table-options="tableOptions" :items="resultData.items" name="period" @updateData="updatePeriods" />
   </div>
 </template>
 
@@ -14,6 +14,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { State, Getter, Action, Mutation, namespace } from 'vuex-class'
 import TimeRange from '@/components/TimeRange.vue'
 import PeriodForm from '@/components/PeriodForm.vue'
+import { getPeriods } from '@/http/apis'
 import Table from '@/components/Table.vue'
 import { VForm } from '@/type'
 
@@ -34,51 +35,66 @@ export default class Home extends Vue {
   private tableOptions = {
     columns: [
       {
+        title: '年度',
+        key: 'year',
+      },
+      {
         title: '期別',
-        key: 'cardNo',
+        key: 'periodType',
       },
       {
         title: '海域石油及天然氣探礦權費率(%)',
-        key: 'name',
+        key: 'seaAreaOilAndGas',
       },
       {
         title: '陸上礦種探礦權費率(%)',
-        key: 'personNo',
+        key: 'onShoreMine',
       },
       {
         title: '海域石油及天然氣採礦權費率(%)',
-        key: 'position',
+        key: 'miningSeaAreaOilAndGas',
       },
       {
         title: '陸上礦種採礦權費率(%)',
-        key: 'organization',
+        key: 'miningOnShoreMine',
       },
       {
         title: '石油及天然氣權利金比率(%)',
-        key: 'subsidiary',
+        key: 'royaltyOilAndGas',
       },
       {
         title: '金屬礦權利金比率(%)',
-        key: 'employeeId',
+        key: 'royaltyMetallogenic',
       },
       {
         title: '其他權利金比率(%)',
-        key: 'employeeId',
+        key: 'royaltyOther',
       },
       {
         title: '年利率(%)',
-        key: 'employeeId',
+        key: 'annualRate',
+      },
+      {
+        title: '動作',
+        key: 'periodId',
       },
     ],
     control: 'edit,delete', // link | edit | delete, seperate multiple by comma
   }
 
   public resultData = {
-    items: []
+    items: [],
+    total: 0,
   }
 
+  public updatePeriods() {
+    getPeriods({skip: 0}).then((data: any) => {
+      this.resultData = data
+    })
+  }
+  
   created() {
-    // @TODO this.searchAPI
+    this.updatePeriods()
   }
 }
 </script>

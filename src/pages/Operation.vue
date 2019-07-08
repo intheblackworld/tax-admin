@@ -19,7 +19,7 @@
         </v-flex>
       </v-layout>
     </v-card>
-    
+
     <TaxForm :taxType="taxType"/>
     <div v-if="taxType === 0">
       <v-card color="gray-3" class="mb-5 pl-2 pt-3">
@@ -28,7 +28,7 @@
             <h3>選擇本期開徵礦業權者</h3>
           </v-flex>
         </v-layout>
-        <Table :table-options="tableOptions" :items="resultData.items"/>
+        <Table :table-options="taxListOptions" :items="taxList.items" name="tax"/>
       </v-card>
 
       <v-card color="gray-3" class="mb-2 pl-2 pt-3">
@@ -37,11 +37,19 @@
             <h3>過去期別未繳清礦業權者</h3>
           </v-flex>
         </v-layout>
-        <Table :table-options="tableOptions" :items="resultData.items"/>
+        <Table :table-options="taxListUnpaidOptions" :items="taxListUnpaid.items" name="tax"/>
       </v-card>
+      <v-layout align-center>
+        <v-flex md1>
+          <v-btn>下一步</v-btn>
+        </v-flex>
+        <v-flex md1>
+          <v-btn>清除</v-btn>
+        </v-flex>
+      </v-layout>
     </div>
     <div v-else>
-      <DynamicSearchComponent />
+      <DynamicSearchComponent/>
     </div>
   </div>
 </template>
@@ -72,6 +80,8 @@ export default class Operation extends Vue {
   // @UsersModule.State('step') public step!: number
 
   @TaxsModule.State('type') public type!: number
+  @TaxsModule.State('taxList') public taxList!: string
+  @TaxsModule.State('taxListUnpaid') public taxListUnpaid!: string
   @TaxsModule.Mutation('toggleTaxType') public toggleTaxType!: (
     value: number,
   ) => {}
@@ -89,7 +99,7 @@ export default class Operation extends Vue {
   //   this.$emit('update:startDate', val)
   // }
 
-  private tableOptions = {
+  private taxListOptions = {
     columns: [
       {
         title: '開徵',
@@ -97,42 +107,100 @@ export default class Operation extends Vue {
       },
       {
         title: '礦區字號',
-        key: 'name',
+        key: 'areaNo',
       },
       {
         title: '執照字號',
-        key: 'personNo',
+        key: 'licesenNo',
       },
       {
         title: '礦權業者',
-        key: 'position',
+        key: 'miningOwner',
       },
       {
         title: '礦產權利金',
-        key: 'organization',
+        key: 'royalty',
       },
       {
         title: '礦業權費',
-        key: 'subsidiary',
+        key: 'mineConcessionFee',
       },
       {
         title: '應徵額',
-        key: 'employeeId',
+        key: 'taxPrice',
       },
       {
         title: '礦權狀態',
-        key: 'employeeId',
+        key: 'mineStatus',
       },
       {
         title: '廢止時間',
-        key: 'employeeId',
+        key: 'revokeDate',
+      },
+      {
+        title: '動作',
+        key: 'taxId',
       },
     ],
     control: 'edit', // link | edit | delete, seperate multiple by comma
   }
 
-  public resultData = {
-    items: [],
+  private taxListUnpaidOptions = {
+    columns: [
+      {
+        title: '開徵',
+        key: 'selected',
+      },
+      {
+        title: '期別',
+        key: 'areaNo',
+      },
+      {
+        title: '礦區字號',
+        key: 'areaNo',
+      },
+      {
+        title: '執照字號',
+        key: 'licesenNo',
+      },
+      {
+        title: '礦權業者',
+        key: 'miningOwner',
+      },
+      {
+        title: '礦產權利金',
+        key: 'royalty',
+      },
+      {
+        title: '礦業權費',
+        key: 'mineConcessionFee',
+      },
+      {
+        title: '滯納金',
+        key: 'fines',
+      },
+      {
+        title: '利息',
+        key: 'interest',
+      },
+      {
+        title: '應徵額',
+        key: 'taxPrice',
+      },
+      {
+        title: '礦權狀態',
+        key: 'mineStatus',
+      },
+      {
+        title: '廢止時間',
+        key: 'revokeDate',
+      },
+      {
+        title: '動作',
+        key: 'taxId',
+      },
+    ],
+    control: 'edit', // link | edit | delete, seperate multiple by comma
   }
 
   created() {
