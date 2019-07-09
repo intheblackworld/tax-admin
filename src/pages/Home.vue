@@ -2,7 +2,7 @@
   <div>
     <h3>期別管理</h3>
     <PeriodForm @updateData="updatePeriods" />
-    <Table :table-options="tableOptions" :items="resultData.items" name="period" @updateData="updatePeriods" />
+    <Table :table-options="tableOptions" :items="resultData.items" name="period" @updateData="updatePeriods" @deleteRow="deletePeriod" />
   </div>
 </template>
 
@@ -14,7 +14,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { State, Getter, Action, Mutation, namespace } from 'vuex-class'
 import TimeRange from '@/components/TimeRange.vue'
 import PeriodForm from '@/components/PeriodForm.vue'
-import { getPeriods } from '@/http/apis'
+import { getPeriods, deletePeriod } from '@/http/apis'
 import Table from '@/components/Table.vue'
 import { VForm } from '@/type'
 
@@ -90,6 +90,12 @@ export default class Home extends Vue {
   public updatePeriods() {
     getPeriods({skip: 0}).then((data: any) => {
       this.resultData = data
+    })
+  }
+
+  private deletePeriod(id: string) {
+    deletePeriod(id).then(() => {
+      this.updatePeriods()
     })
   }
   

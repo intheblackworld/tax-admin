@@ -9,6 +9,7 @@ export const create = (data: object) => post('/api/person/insert', data)
 export const getPeriods = (data: object) => post('/api/periodmanagement/search', data)
 // 期別管理_新增編輯
 export const createPeriod = (data: object) => post('/api/periodadd', data)
+export const deletePeriod = (id: string) => get(`/api/period-delete?PeriodId=${id}`, {})
 /* 開徵作業頁 */
 // 定期開徵-獲取資料-已繳清
 export const getTaxList = (data: object) => post('/api/tax-list', data)

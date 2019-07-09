@@ -52,7 +52,7 @@
             v-for="(action) in tableOptions.control.split(',')"
             :key="`${action}-${3}`"
             v-show="action === 'delete'"
-            @click="deleteProfile(props.item[`${name}Id`])"
+            @click="deleteRow(props.item[`${name}Id`])"
           >delete</v-icon>
         </td>
       </template>
@@ -139,7 +139,9 @@ export default class Table extends Vue {
     })
   }
 
-  public deleteProfile(personId: string) {}
+  public deleteRow(id: string) {
+    this.$emit('deleteRow', id)
+  }
 
   public handleDataValue(column: { key: string }, props: { item: any }) {
     let value
