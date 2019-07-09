@@ -1,21 +1,27 @@
 <template>
   <div>
     <v-data-table
+      v-model="selected"
       :headers="headers"
       :items="items"
-      class
+      class="elevation-1"
+      :select-all="canSelect"
+      :item-key="itemKey"
       no-data-text="查無結果"
       rows-per-page-text="每頁資料筆數"
       :rows-per-page-items="take ? take : rowsPerPageItems"
     >
       <template v-slot:items="props">
+        <td v-if="canSelect">
+          <v-checkbox v-model="props.selected" primary hide-details></v-checkbox>
+        </td>
         <td
-          v-show="column.key !== `${name}Id`"
+          v-show="column.key !== `${actionKey}Id`"
           class="text-xs-center"
           v-for="(column, index) in tableOptions.columns"
           :key="`${column.key}-${index}`"
         >
-          <span v-if="isEdit && (props.item[`${name}Id`] === currentId)">
+          <span v-if="isEdit && (props.index === currentIndex)">
             <v-select
               v-if="column.key === 'periodType'"
               :items="[{ text: '上期', value: 1,}, { text: '下期', value: 2,}]"
@@ -34,13 +40,13 @@
         <td v-if="tableOptions.control" class="text-xs-center">
           <v-btn
             @click="updateRow(props.item[`${name}Id`])"
-            v-if="isEdit && (props.item[`${name}Id`] === currentId)"
+            v-if="isEdit && (props.index === currentIndex)"
           >完成</v-btn>
           <v-icon
             v-for="(action) in tableOptions.control.split(',')"
             :key="`${props}-${action}-${1}`"
-            v-show="action === 'edit' && (props.item[`${name}Id`] !== currentId)"
-            @click="changeEditMode(props.item[`${name}Id`])"
+            v-show="action === 'edit' && (props.index !== currentIndex || !isEdit)"
+            @click="changeEditMode(props.item[`${name}Id`], props.index)"
           >edit</v-icon>
           <v-icon
             v-for="(action) in tableOptions.control.split(',')"
@@ -54,6 +60,12 @@
             v-show="action === 'delete'"
             @click="deleteRow(props.item[`${name}Id`])"
           >delete</v-icon>
+          <v-icon
+            v-for="(action) in tableOptions.control.split(',')"
+            :key="`${props}-${action}-${4}`"
+            v-show="action === 'detail'"
+            @click="showDialog(props.item[`mineAreaId`], props.index)"
+          >format_list_bulleted</v-icon>
         </td>
       </template>
     </v-data-table>
@@ -75,17 +87,12 @@ import { formatDate } from '@/utils/methods'
 import { createPeriod, getPeriods } from '@/http/apis'
 // import { getPositionType, getPositionTitle, getMineType } from '@/http/apis'
 
-const LayoutsModule = namespace('layouts')
+const TaxsModule = namespace('taxs')
 
 @Component
 export default class Table extends Vue {
-  @LayoutsModule.State('options') public options!: {
-    positionType: Array<{ text: string }>
-    positionTitle: Array<{ text: string }>
-    mineType: Array<{ text: string }>
-  }
-
   @Prop() public name!: string
+  @Prop() public itemKey!: string // 表格checkbox 判斷狀態用
   @Prop() public take!: number[]
   get headers() {
     return this.tableOptions.columns.map(option => ({
@@ -110,10 +117,45 @@ export default class Table extends Vue {
   }
 
   @Prop(Array) public items!: Array<{}>
+  @Prop(Boolean) public canSelect!: Boolean
+  
+  @TaxsModule.State('taxList') public taxList!: {
+    items: []
+    total: number
+    selected: []
+  }
+
+  @TaxsModule.State('taxUnpaidList') public taxUnpaidList!: {
+    items: []
+    total: number
+  }
+
+  @TaxsModule.Mutation('setSelected') public setSelected!: (value: {}) => {}
+
+  // 連動表格的勾選跟全局狀態的資料
+  get selected() {
+    interface IParams {
+      [key: string]: any
+    }
+    if (this.canSelect) {
+      return (this as IParams)[`${this.name}List`].selected
+    } else {
+      return []
+    }
+  }
+  // 連動表格的勾選跟全局狀態的資料
+  set selected(value) {
+    this.setSelected({ key: `${this.name}List`, data: value })
+  }
+
+
+  get actionKey() {
+    return this.name.replace('Unpaid', '')
+  }
 
   private isEdit = false
   private isCreate = false
-  private currentId = ''
+  private currentIndex!: number | null
   private formatDate = formatDate
   private currentSendData = {}
 
@@ -121,11 +163,11 @@ export default class Table extends Vue {
     this.$router.push(`user/${personId}`)
   }
 
-  public changeEditMode(id: string) {
-    this.currentId = id
-    const reqData = _.find(this.items, { [`${this.name}Id`]: id })
-    this.currentSendData = <any>reqData
+  public changeEditMode(id: string, index: number) {
+    this.currentIndex = index
     this.isEdit = true
+    const reqData = this.items[index]
+    this.currentSendData = <any>reqData
   }
 
   public createProfile() {
@@ -133,14 +175,27 @@ export default class Table extends Vue {
   }
 
   private updateRow(id: string) {
-    createPeriod(this.currentSendData).then(() => {
-      this.$emit('updateData')
+    // 有 id 代表直接在表格內編輯資料之後，完成就向後端丟資料(ex. 期別管理)
+    // 無 id 代表還要整理資料再一併送出(ex. 開徵作業)
+    if (id) {
+      if (this.name === 'period') {
+        createPeriod(this.currentSendData).then(() => {
+          this.$emit('updateData')
+          this.isEdit = false
+        })
+      }
+    } else {
       this.isEdit = false
-    })
+    }
   }
 
   public deleteRow(id: string) {
     this.$emit('deleteRow', id)
+  }
+
+
+  public showDialog(id: string) {
+    this.$emit('showDialog', id)
   }
 
   public handleDataValue(column: { key: string }, props: { item: any }) {
@@ -163,14 +218,11 @@ export default class Table extends Vue {
       } else {
         switch (column.key) {
           case 'periodType':
-            let periodTypeOptions = [{ text: '上期', value: 1,}, { text: '下期', value: 2,}]
+            let periodTypeOptions = [
+              { text: '上期', value: 1 },
+              { text: '下期', value: 2 },
+            ]
             value = periodTypeOptions[props.item[column.key] - 1].text
-            break
-          case 'mineType':
-            value = this.options.mineType[props.item[column.key]].text
-            break
-          case 'positionTitle':
-            value = this.options.positionTitle[props.item[column.key]].text
             break
           default:
             value = props.item[column.key]

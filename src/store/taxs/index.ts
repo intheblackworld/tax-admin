@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { getTaxList, getTaxListUnpaid } from '@/http/apis'
+import { getTaxList, getTaxUnpaidList } from '@/http/apis'
 
 export default {
   namespaced: true,
@@ -25,9 +25,16 @@ export default {
       type: 1, // 上、下期(1,2)
     },
     // 開徵作業-定期開徵-已繳清表格
-    taxList: {},
+    taxList: {
+      items: [],
+      total: 0,
+      selected: [],
+    },
     // 開徵作業-定期開徵-未繳清表格
-    taxListUnpaid: {},
+    taxUnpaidList: {
+      items: [],
+      total: 0,
+    },
 
     type: 0, // 0 定期開徵 1 個案開徵
   },
@@ -41,12 +48,29 @@ export default {
       state.type = value
     },
 
-    setTaxList(state: { taxList: {} }, data: {items: [], total: number}) {
-      state.taxList = data
+    setTaxList(state: { taxList: {} }, data: { items: []; total: number }) {
+      state.taxList = {
+        items: data.items,
+        total: data.total,
+        selected: [],
+      }
     },
 
-    setTaxListUnpaid(state: { taxListUnpaid: {} }, data: {items: [], total: number}) {
-      state.taxListUnpaid = data
+    setTaxUnpaidList(
+      state: { taxUnpaidList: {} },
+      data: { items: []; total: number },
+    ) {
+      state.taxUnpaidList = {
+        items: data.items,
+        total: data.total,
+      }
+    },
+
+    setSelected(state: any, payload: { key: string; data: [] }) {
+      interface IParams {
+        [key: string]: any
+      }
+      (state as IParams)[payload.key].selected = payload.data
     },
   },
 
@@ -56,14 +80,14 @@ export default {
     //     context.commit('createSuccess', data)
     //   })
     // },
-    async getTaxList(context: any, {...props}) {
-      getTaxList({...props}).then((data) => {
+    async getTaxList(context: any, { ...props }) {
+      getTaxList({ ...props }).then((data) => {
         context.commit('setTaxList', data)
       })
     },
-    async getTaxListUnpaid(context: any, {...props}) {
-      getTaxListUnpaid({...props}).then((data) => {
-        context.commit('setTaxListUnpaid', data)
+    async getTaxUnpaidList(context: any, { ...props }) {
+      getTaxUnpaidList({ ...props }).then((data: any) => {
+        context.commit('setTaxUnpaidList', data)
       })
     },
   },
