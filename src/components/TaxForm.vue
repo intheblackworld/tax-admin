@@ -8,7 +8,7 @@
       </v-layout>
       <v-form ref="taxForm">
         <v-container v-if="taxFormstep === 0">
-          <v-layout align-center>
+          <v-layout align-center v-if="taxType === 0">
             <v-flex xs12 md2>期別</v-flex>
             <v-flex xs12 md2>
               <v-text-field v-model="taxListReq.year" label></v-text-field>
@@ -58,21 +58,19 @@
           </v-layout>
         </v-container>
         <v-container v-if="taxFormstep === 1">
-          <v-layout align-center>
+          <v-layout align-center v-if="taxType === 0">
             <v-flex xs12 md2>期別</v-flex>
             <v-flex xs12 md2>{{taxListReq.year}}年{{periodTypes[taxListReq.type -1]}}</v-flex>
           </v-layout>
           <v-layout align-center>
             <v-flex xs12 md2>繳納期限</v-flex>
-            <v-flex xs12 md2>
-              {{taxListReq.PaylimitDate}}
-            </v-flex>
+            <v-flex xs12 md2>{{taxListReq.PaylimitDate}}</v-flex>
           </v-layout>
         </v-container>
       </v-form>
       <v-layout v-if="taxFormstep === 0">
-        <v-btn flat @click="submitForm(taxListReq)">建立</v-btn>
-        <v-btn flat @click="resetCurrentForm(taxForm)">清除</v-btn>
+        <v-btn @click="submitForm(taxListReq)">建立</v-btn>
+        <v-btn @click="resetCurrentForm(taxForm)">清除</v-btn>
       </v-layout>
     </v-card>
   </div>
@@ -99,6 +97,7 @@ export default class TaxForm extends mixins(CreateMixin) {
 
   @TaxsModule.Action('getTaxList') public getTaxList!: ({}) => {}
   @TaxsModule.Action('getTaxUnpaidList') public getTaxUnpaidList!: ({}) => {}
+  @TaxsModule.Action('getTaxCase') public getTaxCase!: ({}) => {}
 
   @Prop() public taxType!: number
   @Prop(Number) public taxFormstep!: number
@@ -113,12 +112,27 @@ export default class TaxForm extends mixins(CreateMixin) {
 
   private periodTypes = ['上期', '上期']
 
-  private submitForm(reqData: any) {
+  private getList(reqData: any) {
     this.getTaxList(reqData)
     let reqDataUnpaid = {
       PaylimitDate: reqData.PaylimitDate,
     }
     this.getTaxUnpaidList(reqDataUnpaid)
+  }
+
+  private getCase(reqData: any) {
+    let reqDataCase = {
+      PaylimitDate: reqData.PaylimitDate,
+    }
+    this.getTaxCase(reqDataCase)
+  }
+
+  private submitForm(reqData: any) {
+    if (this.taxType === 0) {
+      this.getList(reqData)
+    } else {
+      this.getCase(reqData)
+    }
   }
 }
 </script>

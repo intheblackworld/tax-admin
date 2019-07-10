@@ -109,8 +109,42 @@
         </v-layout>
       </div>
     </div>
+    <!-- 個案開徵 -->
     <div v-else>
-      <DynamicSearchComponent/>
+      <div v-if="step === 0">
+        <TaxCaseSearchComponent />
+        <v-layout align-center>
+            <v-flex md1>
+              <v-btn @click="step = 1">下一步</v-btn>
+            </v-flex>
+            <v-flex md1>
+              <v-btn>清除</v-btn>
+            </v-flex>
+          </v-layout>  
+      </div>
+      <div v-else-if="step === 1">
+        <v-card color="gray-3" class="mb-5 pl-2 pt-3">
+          <v-layout align-center>
+            <v-flex md2>
+              <h3>開徵清單</h3>
+            </v-flex>
+          </v-layout>
+          <Table
+            :table-options="taxCaseOptions"
+            :items="taxCase.selected"
+            name="tax"
+            @showDialog="showDetailDialog($event)"
+          />
+        </v-card>
+        <v-layout align-center>
+          <v-flex md1>
+            <v-btn @click="submitTaxAdd">確認</v-btn>
+          </v-flex>
+          <v-flex md1>
+            <v-btn @click="step = 0">上一步</v-btn>
+          </v-flex>
+        </v-layout>
+      </div>
     </div>
 
     <v-dialog v-model="detailDialog" fullscreen hide-overlay transition="dialog-bottom-transition">
@@ -231,7 +265,7 @@ import _ from 'lodash'
 import TimeRange from '@/components/TimeRange.vue'
 import TaxForm from '@/components/TaxForm.vue'
 import Table from '@/components/Table.vue'
-import DynamicSearchComponent from '@/components/DynamicSearchComponent.vue'
+import TaxCaseSearchComponent from '@/components/TaxCaseSearchComponent.vue'
 import { createTax } from '@/http/apis'
 import { VForm } from '@/type'
 
@@ -242,7 +276,7 @@ const TaxsModule = namespace('taxs')
     TimeRange,
     TaxForm,
     Table,
-    DynamicSearchComponent,
+    TaxCaseSearchComponent,
   },
 })
 export default class Operation extends Vue {
@@ -260,6 +294,13 @@ export default class Operation extends Vue {
   @TaxsModule.Mutation('toggleTaxType') public toggleTaxType!: (
     value: number,
   ) => {}
+
+  @TaxsModule.State('taxCase') public taxCase!: {
+    items: []
+    filters: any[]
+    selected: any[]
+    total: number
+  }
 
   @TaxsModule.State('taxListForm') public taxListReq!: {
     year: null // 年度(民國)
@@ -285,9 +326,11 @@ export default class Operation extends Vue {
     if (val > 0) {
       this.taxListOptions.control = 'detail'
       this.taxUnpaidListOptions.control = 'detail'
+      this.taxCaseOptions.control = 'detail'
     } else {
       this.taxListOptions.control = 'edit'
       this.taxUnpaidListOptions.control = 'edit'
+      this.taxCaseOptions.control = 'edit,delete'
     }
   }
 
@@ -387,6 +430,56 @@ export default class Operation extends Vue {
     control: 'edit', // link | edit | delete, seperate multiple by comma
   }
 
+  private taxCaseOptions = {
+    columns: [
+      {
+        title: '礦區字號',
+        key: 'areaNo',
+      },
+      {
+        title: '執照字號',
+        key: 'licesenNo',
+      },
+      {
+        title: '礦權業者',
+        key: 'miningOwner',
+      },
+      {
+        title: '礦產權利金',
+        key: 'royalty',
+      },
+      {
+        title: '礦業權費',
+        key: 'mineConcessionFee',
+      },
+      {
+        title: '滯納金',
+        key: 'fines',
+      },
+      {
+        title: '利息',
+        key: 'interest',
+      },
+      {
+        title: '應徵額',
+        key: 'taxPrice',
+      },
+      {
+        title: '礦權狀態',
+        key: 'mineStatus',
+      },
+      {
+        title: '廢止時間',
+        key: 'revokeDate',
+      },
+      {
+        title: '動作',
+        key: 'taxId',
+      },
+    ],
+    control: 'edit,delete', // link | edit | delete, seperate multiple by comma
+  }
+
   created() {
     // @TODO this.searchAPI
   }
@@ -415,12 +508,23 @@ export default class Operation extends Vue {
       items: [],
       total: 0,
     }
+    this.taxCase = {
+      items: [],
+      total: 0,
+      filters: [],
+      selected: [],
+    }
   }
 
   private dialogData = {}
 
   private showDetailDialog(id: string) {
-    const collection = [...this.taxList.selected, ...this.taxUnpaidList.items]
+    let collection
+    if (this.taxType === 0) {
+      collection = [...this.taxList.selected, ...this.taxUnpaidList.items]
+    } else {
+      collection = [...this.taxCase.selected]
+    }
     const data = _.find(collection, { mineAreaId: id })
     this.dialogData = <Object>data
     this.detailDialog = true
@@ -428,11 +532,17 @@ export default class Operation extends Vue {
 
   private submitTaxAdd() {
     const { year, type } = this.taxListReq
+    let collection
+    if (this.taxType === 0) {
+      collection = [...this.taxList.selected, ...this.taxUnpaidList.items]
+    } else {
+      collection = [...this.taxCase.selected]
+    }
     const reqData = {
       year,
       periodtype: type,
       type: this.taxType,
-      taxListResponse: [...this.taxList.selected, ...this.taxUnpaidList.items],
+      taxListResponse: collection,
     }
     createTax(reqData).then(() => {
       this.resetAll()

@@ -49,8 +49,8 @@
             
           </v-container>
         </v-form>
-        <v-btn flat @click="resetCurrentForm(manageForm)">建立</v-btn>
-        <v-btn flat @click="resetCurrentForm(manageForm)">清除</v-btn>
+        <v-btn @click="resetCurrentForm(manageForm)">建立</v-btn>
+        <v-btn @click="resetCurrentForm(manageForm)">清除</v-btn>
       </v-card>
     </v-tab-item>
     <v-tab-item>
@@ -92,8 +92,8 @@
             
           </v-container>
         </v-form>
-        <v-btn flat @click="resetCurrentForm(manageForm)">建立</v-btn>
-        <v-btn flat @click="resetCurrentForm(manageForm)">清除</v-btn>
+        <v-btn @click="resetCurrentForm(manageForm)">建立</v-btn>
+        <v-btn @click="resetCurrentForm(manageForm)">清除</v-btn>
       </v-card>
     </v-tab-item>
     <v-tab-item>
@@ -135,8 +135,8 @@
             
           </v-container>
         </v-form>
-        <v-btn flat @click="resetCurrentForm(manageForm)">建立</v-btn>
-        <v-btn flat @click="resetCurrentForm(manageForm)">清除</v-btn>
+        <v-btn @click="resetCurrentForm(manageForm)">建立</v-btn>
+        <v-btn @click="resetCurrentForm(manageForm)">清除</v-btn>
       </v-card>Ｆ
     </v-tab-item>
   </v-tabs>

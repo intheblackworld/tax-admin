@@ -30,8 +30,8 @@
           </v-layout>
         </v-container>
       </v-form>
-      <v-btn flat @click="resetCurrentForm(noticeForm)">新建</v-btn>
-      <v-btn flat @click="resetCurrentForm(noticeForm)">清除</v-btn>
+      <v-btn @click="resetCurrentForm(noticeForm)">新建</v-btn>
+      <v-btn @click="resetCurrentForm(noticeForm)">清除</v-btn>
     </v-card>
     <Table :table-options="tableOptions" :items="resultData.items"/>
   </div>

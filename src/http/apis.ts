@@ -15,8 +15,7 @@ export const deletePeriod = (id: string) => get(`/api/period-delete?PeriodId=${i
 export const getTaxList = (data: object) => post('/api/tax-list', data)
 // 定期開徵-獲取資料-未繳清
 export const getTaxUnpaidList = (data: object) => post('/api/tax-list-unpaid', data)
-// 期開徵作業_定期開徵_新增編輯
+// 定期開徵作業_定期開徵_新增編輯
 export const createTax = (data: object) => post('/api/tax-add', data)
-
-
-
+// 個案開徵-獲取資料
+export const getTaxCase = (data: object) => post('/api/tax-case', data)

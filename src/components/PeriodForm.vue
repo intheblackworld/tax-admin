@@ -85,8 +85,8 @@
           </v-layout>
         </v-container>
       </v-form>
-      <v-btn flat @click="submitForm(periodReq)">新建</v-btn>
-      <v-btn flat @click="resetCurrentForm(periodForm)">清除</v-btn>
+      <v-btn @click="submitForm(periodReq)">新建</v-btn>
+      <v-btn @click="resetCurrentForm(periodForm)">清除</v-btn>
     </v-card>
   </div>
 </template>

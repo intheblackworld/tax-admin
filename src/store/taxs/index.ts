@@ -1,5 +1,5 @@
 import Vue from 'vue'
-import { getTaxList, getTaxUnpaidList } from '@/http/apis'
+import { getTaxList, getTaxUnpaidList, getTaxCase } from '@/http/apis'
 
 export default {
   namespaced: true,
@@ -34,6 +34,13 @@ export default {
     taxUnpaidList: {
       items: [],
       total: 0,
+    },
+
+    taxCase: {
+      items: [],
+      toal: 0,
+      filters: [],
+      selected: [],
     },
 
     type: 0, // 0 定期開徵 1 個案開徵
@@ -72,6 +79,15 @@ export default {
       }
       (state as IParams)[payload.key].selected = payload.data
     },
+
+    setTaxCase(state: { taxCase: {} }, data: { items: []; total: number }) {
+      state.taxCase = {
+        items: data.items, // 首次接到所有資料
+        filters: [], // 根據條件搜尋過後的資料
+        selected: [], // 選擇了之後加到了表格，下一步用來檢視的資料
+        total: data.total,
+      }
+    },
   },
 
   actions: {
@@ -88,6 +104,12 @@ export default {
     async getTaxUnpaidList(context: any, { ...props }) {
       getTaxUnpaidList({ ...props }).then((data: any) => {
         context.commit('setTaxUnpaidList', data)
+      })
+    },
+
+    async getTaxCase(context: any, { ...props }) {
+      getTaxCase({ ...props }).then((data: any) => {
+        context.commit('setTaxCase', data)
       })
     },
   },

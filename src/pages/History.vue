@@ -24,8 +24,8 @@
           </v-layout>
         </v-container>
       </v-form>
-      <v-btn flat @click="resetCurrentForm(periodForm)">新建</v-btn>
-      <v-btn flat @click="resetCurrentForm(periodForm)">清除</v-btn>
+      <v-btn @click="resetCurrentForm(periodForm)">新建</v-btn>
+      <v-btn @click="resetCurrentForm(periodForm)">清除</v-btn>
     </v-card>
     <Table :table-options="tableOptions" :items="resultData.items"/>
   </div>
