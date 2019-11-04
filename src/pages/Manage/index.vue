@@ -1,18 +1,16 @@
 <template>
   <div>
-    <v-card color="lighten-1" class="mb-2 pl-2">
-      <v-layout align-center>
-        <v-flex md2>
-          <h3>開徵作業</h3>
-        </v-flex>
-      </v-layout>
-    </v-card>
+    <h1>開徵管理</h1>
     <v-layout>
-      <v-flex md4>
+      <v-flex class="side">
         <v-navigation-drawer>
           <v-list dense>
-            <template v-for="item in items">
-              <v-list-tile @click="$router.push(`/${item.link}`)" :key="item.title">
+            <template v-for="(item) in items">
+              <v-list-tile
+                @click="pushTo(item.type)"
+                :key="item.title"
+                :class="`item ${item.type === current ? 'active' : ''}`"
+              >
                 <v-list-tile-content>
                   <v-list-tile-title>{{ item.title }}</v-list-tile-title>
                 </v-list-tile-content>
@@ -21,7 +19,7 @@
           </v-list>
         </v-navigation-drawer>
       </v-flex>
-      <v-flex md8>
+      <v-flex class="view">
         <router-view></router-view>
       </v-flex>
     </v-layout>
@@ -29,6 +27,22 @@
 </template>
 
 <style lang="scss" scoped>
+.side {
+  width: 12%;
+}
+
+.view {
+  width: 88%;
+}
+.v-list {
+  padding-top: 0;
+}
+.item {
+  &.active {
+    background: #2196f3;
+    color: #fff;
+  }
+}
 </style>
 
 <script lang="ts">
@@ -49,24 +63,29 @@ const TaxsModule = namespace('taxs')
 })
 export default class Manage extends Vue {
   // @UsersModule.State('step') public step!: number
-
+  private current = -1
   private items = [
     {
       title: '不限',
-      link: 'manage/default',
+      type: -1,
     },
     {
       title: '定期開徵案件',
-      link: 'manage/period',
+      type: 0,
     },
     {
       title: '個案開徵案件',
-      link: 'manage/custom',
+      type: 1,
     },
   ]
 
-  created() {
+  public created() {
     // @TODO this.searchAPI
+  }
+
+  private pushTo(type: number) {
+    this.current = type
+    this.$router.push(`?type=${type}`)
   }
 }
 </script>

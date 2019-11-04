@@ -136,7 +136,7 @@ export default class Reward extends mixins(CreateMixin) {
     rewardDate: string // 獎懲日期
     rewardDesc: string // 獎懲事實
     rewardFile: object[] // 附件上傳
-    rewardFileName: string // 附件顯示名稱
+    rewardFileName: string, // 附件顯示名稱
   }>
 
   @Prop() public submit!: () => {}

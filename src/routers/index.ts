@@ -35,16 +35,6 @@ export default new Router({
           component: () =>
             import(/* webpackChunkName: "manage" */ '@/pages/Manage/default.vue'),
         },
-        {
-          path: 'period',
-          component: () =>
-            import(/* webpackChunkName: "manage" */ '@/pages/Manage/period.vue'),
-        },
-        {
-          path: 'custom',
-          component: () =>
-            import(/* webpackChunkName: "manage" */ '@/pages/Manage/custom.vue'),
-        },
       ],
     },
     {
@@ -62,6 +52,14 @@ export default new Router({
       // which is lazy-loaded when the route is visited.
       component: () =>
         import(/* webpackChunkName: "notice" */ '@/pages/Notice.vue'),
+    },
+    {
+      path: '/report',
+      name: 'report', // 開立通知單紀錄
+      // route level code-splitting
+      // which is lazy-loaded when the route is visited.
+      component: () =>
+        import(/* webpackChunkName: "report" */ '@/pages/Report.vue'),
     },
   ],
 })

@@ -6,10 +6,16 @@ import taxs from './store/taxs'
 
 Vue.use(Vuex)
 
-export default new Vuex.Store({
-  state: {
-    token: '',
-  },
+interface ILayoutState {
+  token: string,
+  info: object,
+}
+
+interface IState {
+  layouts: ILayoutState
+}
+
+export default new Vuex.Store<IState>({
   mutations: {},
   actions: {},
 

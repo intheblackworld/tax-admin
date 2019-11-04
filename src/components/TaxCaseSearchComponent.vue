@@ -7,7 +7,7 @@
         </v-flex>
       </v-layout>
       <v-layout>
-        <v-flex md4 class="pl-3 pr-5">
+        <v-flex md3 class="pl-3 pr-5">
           <v-form ref="caseForm">
             <v-layout align-center>
               <v-flex xs12 md4>礦區字號</v-flex>
@@ -34,15 +34,15 @@
               </v-flex>
             </v-layout>
             <v-layout>
-              <v-btn @click="search(searchForm)">搜尋</v-btn>
-              <v-btn @click="resetCurrentForm(taxForm)">清除</v-btn>
+              <v-btn color="info" @click="search(searchForm)">搜尋</v-btn>
+              <v-btn @click="resetCurrentForm(caseForm)">清除</v-btn>
             </v-layout>
           </v-form>
           <v-list class="search-list">
             <template v-for="(item, index) in taxCase.filters">
               <v-list-tile :key="item.areaNo" @click="addToSelected(index)">
                 <v-list-tile-content>
-                  <v-list-tile-title v-text="`礦場編號${item.areaNo}`"></v-list-tile-title>
+                  <v-list-tile-title v-text="`礦區字號${item.areaNo}`"></v-list-tile-title>
                 </v-list-tile-content>
 
                 <v-list-tile-action>
@@ -53,11 +53,12 @@
             </template>
           </v-list>
         </v-flex>
-        <v-flex md8 class="pt-3">
+        <v-flex md9 class="pt-3">
           <Table
             :table-options="taxCaseOptions"
             :items="taxCase.selected"
             name="tax"
+            @deleteRow="removeFromSelect($event)"
             :selected="taxCase.selected"
             :canSelect="false"
           />
@@ -98,7 +99,7 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
     items: []
     filters: any[]
     selected: any[]
-    total: number
+    total: number,
   }
 
   @TaxsModule.Mutation('setSelected') public setSelected!: (value: {}) => {}
@@ -121,8 +122,12 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
         key: 'licesenNo',
       },
       {
-        title: '礦權業者',
+        title: '礦業權者',
         key: 'miningOwner',
+      },
+      {
+        title: '期別',
+        key: 'period',
       },
       {
         title: '礦產權利金',
@@ -151,6 +156,10 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
       {
         title: '廢止時間',
         key: 'revokeDate',
+      },
+      {
+        title: '備註',
+        key: 'remarks',
       },
       {
         title: '動作',
@@ -195,10 +204,10 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
       }
 
       // @TODO 按照checkbox mineStatus搜尋
-      
+
       return conditionPass === 3
     })
-    
+
   }
 
   private addToSelected(index: number) {
@@ -208,13 +217,19 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
 
     this.selectList = [
       ...this.selectList,
-      index
+      index,
     ]
 
     this.setSelected({ key: 'taxCase', data: [
       ...this.taxCase.selected,
-      this.taxCase.filters[index]
+      this.taxCase.filters[index],
     ] })
+  }
+
+  private removeFromSelect(index: number) {
+    this.taxCase.selected.indexOf(index)
+    this.selectList.splice(index, 1)
+    this.taxCase.selected.splice(index, 1)
   }
 }
 </script>

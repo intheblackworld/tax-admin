@@ -13,7 +13,11 @@
     >
       <template v-slot:items="props">
         <td v-if="canSelect">
-          <v-checkbox v-model="props.selected" primary hide-details></v-checkbox>
+          <v-layout align-center>
+            {{log(props, props.selected)}}
+            <v-checkbox v-model="props.selected" primary hide-details></v-checkbox>
+            <v-icon v-if="props.item.payStatus === 2" color="rgba(150, 40, 27, 1)">warning</v-icon>
+          </v-layout>
         </td>
         <td
           v-show="column.key !== `${actionKey}Id`"
@@ -29,6 +33,9 @@
               solo
               v-model="currentSendData[column.key]"
             ></v-select>
+            <span v-else-if="column.key === 'mineStatus'">{{props.item.mineStatus}}</span>
+            <span v-else-if="column.key === 'unpaidPrice'">{{props.item.unpaidPrice}}</span>
+            
             <v-text-field v-else v-model="currentSendData[column.key]" label></v-text-field>
           </span>
           <span v-else>{{handleDataValue(column, props)}}</span>
@@ -42,6 +49,45 @@
             @click="updateRow(props.item[`${name}Id`])"
             v-if="isEdit && (props.index === currentIndex)"
           >完成</v-btn>
+          <span v-if="tableOptions.control === 'multiple'" style="width: 150px;display:block;">
+            <!-- pay all -->
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-icon @click="payAll(props.item)" v-on="on">money_off</v-icon>
+              </template>
+              <span>結清</span>
+            </v-tooltip>
+            <!-- pay custom -->
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-icon @click="payCustom(props.item)" v-on="on">attach_money</v-icon>
+              </template>
+              <span>登錄繳納紀錄</span>
+            </v-tooltip>
+            <!-- edit -->
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-icon @click="changeEditMode(props.item[`${name}Id`], props.index)" v-on="on">edit</v-icon>
+              </template>
+              <span>編輯</span>
+            </v-tooltip>
+            <!-- go history -->
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-icon v-on="on" @click="$router.push(`/history?areaNo=${props.item.areaNo}`)">format_list_bulleted</v-icon>
+              </template>
+              <span>歷史繳費記錄</span>
+            </v-tooltip>
+            
+            <!-- payment -->
+            <v-tooltip bottom>
+              <template v-slot:activator="{ on }">
+                <v-icon v-on="on" @click="showPayment(props.item)">credit_card</v-icon>
+              </template>
+              <span>催繳通知</span>
+            </v-tooltip>
+            
+          </span>
           <v-icon
             v-for="(action) in tableOptions.control.split(',')"
             :key="`${props}-${action}-${1}`"
@@ -58,13 +104,13 @@
             v-for="(action) in tableOptions.control.split(',')"
             :key="`${action}-${3}`"
             v-show="action === 'delete'"
-            @click="deleteRow(props.item[`${name}Id`])"
+            @click="deleteRow(name === 'tax' ? props.index : props.item[`${name}Id`])"
           >delete</v-icon>
           <v-icon
             v-for="(action) in tableOptions.control.split(',')"
             :key="`${props}-${action}-${4}`"
             v-show="action === 'detail'"
-            @click="showDialog(props.item[`mineAreaId`], props.index)"
+            @click="showDialog(props.item, props.index)"
           >format_list_bulleted</v-icon>
         </td>
       </template>
@@ -84,7 +130,7 @@ import { Component, Prop, Vue, Watch } from 'vue-property-decorator'
 import { State, Getter, Action, Mutation, namespace } from 'vuex-class'
 import _ from 'lodash'
 import { formatDate } from '@/utils/methods'
-import { createPeriod, getPeriods } from '@/http/apis'
+import { createPeriod, getPeriods, createTaxManage } from '@/http/apis'
 // import { getPositionType, getPositionTitle, getMineType } from '@/http/apis'
 
 const TaxsModule = namespace('taxs')
@@ -92,10 +138,11 @@ const TaxsModule = namespace('taxs')
 @Component
 export default class Table extends Vue {
   @Prop() public name!: string
+  @Prop() public case!: string
   @Prop() public itemKey!: string // 表格checkbox 判斷狀態用
   @Prop() public take!: number[]
   get headers() {
-    return this.tableOptions.columns.map(option => ({
+    return this.tableOptions.columns.map((option) => ({
       text: option.title,
       align: 'center',
       value: option.key,
@@ -111,23 +158,29 @@ export default class Table extends Vue {
       key: string
       sortable: boolean
       control: string
-      transMethod: string
+      transMethod: string,
     }>
-    control: string
+    control: string,
   }
 
   @Prop(Array) public items!: Array<{}>
-  @Prop(Boolean) public canSelect!: Boolean
-  
+  @Prop(Boolean) public canSelect!: boolean
+
   @TaxsModule.State('taxList') public taxList!: {
     items: []
     total: number
-    selected: []
+    selected: [],
+  }
+
+  @TaxsModule.State('taxManage') public taxManage!: {
+    items: []
+    total: number
+    selected: [],
   }
 
   @TaxsModule.State('taxUnpaidList') public taxUnpaidList!: {
     items: []
-    total: number
+    total: number,
   }
 
   @TaxsModule.Mutation('setSelected') public setSelected!: (value: {}) => {}
@@ -138,16 +191,15 @@ export default class Table extends Vue {
       [key: string]: any
     }
     if (this.canSelect) {
-      return (this as IParams)[`${this.name}List`].selected
+      return (this as IParams)[`${this.name}${this.case}`].selected
     } else {
       return []
     }
   }
   // 連動表格的勾選跟全局狀態的資料
   set selected(value) {
-    this.setSelected({ key: `${this.name}List`, data: value })
+    this.setSelected({ key: `${this.name}${this.case}`, data: value })
   }
-
 
   get actionKey() {
     return this.name.replace('Unpaid', '')
@@ -155,7 +207,7 @@ export default class Table extends Vue {
 
   private isEdit = false
   private isCreate = false
-  private currentIndex!: number | null
+  private currentIndex: number | null = null
   private formatDate = formatDate
   private currentSendData = {}
 
@@ -167,34 +219,22 @@ export default class Table extends Vue {
     this.currentIndex = index
     this.isEdit = true
     const reqData = this.items[index]
-    this.currentSendData = <any>reqData
+    this.currentSendData = reqData as any
   }
 
   public createProfile() {
     this.isCreate = true
   }
 
-  private updateRow(id: string) {
-    // 有 id 代表直接在表格內編輯資料之後，完成就向後端丟資料(ex. 期別管理)
-    // 無 id 代表還要整理資料再一併送出(ex. 開徵作業)
-    if (id) {
-      if (this.name === 'period') {
-        createPeriod(this.currentSendData).then(() => {
-          this.$emit('updateData')
-          this.isEdit = false
-        })
-      }
-    } else {
-      this.isEdit = false
-    }
-  }
-
   public deleteRow(id: string) {
     this.$emit('deleteRow', id)
   }
 
-
-  public showDialog(id: string) {
+  public showDialog(object: any) {
+    let id = object.mineAreaId
+    if (!id) {
+      id = object.number
+    }
     this.$emit('showDialog', id)
   }
 
@@ -218,11 +258,14 @@ export default class Table extends Vue {
       } else {
         switch (column.key) {
           case 'periodType':
-            let periodTypeOptions = [
+            const periodTypeOptions = [
               { text: '上期', value: 1 },
               { text: '下期', value: 2 },
             ]
             value = periodTypeOptions[props.item[column.key] - 1].text
+            break
+          case 'hasPaidPrice':
+            value = props.item.totalPrice - props.item.unpaidPrice
             break
           default:
             value = props.item[column.key]
@@ -232,6 +275,41 @@ export default class Table extends Vue {
     }
 
     return value
+  }
+  private payAll(data: any) {
+    this.$emit('payAll', data)
+  }
+
+  private payCustom(data: any) {
+    this.$emit('payCustom', data)
+  }
+  private showPayment(data: any) {
+    this.$emit('showPayment', data)
+  }
+
+  private log = (val: any, val2: any) => {
+    // console.log(val, val2)
+  }
+
+  private updateRow(id: string) {
+    // 有 id 代表直接在表格內編輯資料之後，完成就向後端丟資料(ex. 期別管理)
+    // 無 id 代表還要整理資料再一併送出(ex. 開徵作業)
+    if (id) {
+      if (this.name === 'period') {
+        createPeriod(this.currentSendData).then(() => {
+          this.$emit('updateData')
+          this.isEdit = false
+        })
+      }
+      if (this.name === 'tax') {
+        createTaxManage(this.currentSendData).then(() => {
+          this.$emit('updateData')
+          this.isEdit = false
+        })
+      }
+    } else {
+      this.isEdit = false
+    }
   }
 }
 </script>
