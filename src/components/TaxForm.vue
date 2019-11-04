@@ -8,7 +8,7 @@
       </v-layout>
       <v-form ref="taxForm">
         <v-container v-if="taxFormstep === 0">
-          <v-layout align-center v-if="taxType === 0">
+          <v-layout align-center>
             <v-flex xs12 md2>期別</v-flex>
             <v-flex xs12 md2>
               <v-text-field v-model="taxListReq.year" :rules="[rules.required,]" label></v-text-field>
@@ -92,7 +92,7 @@
           </v-layout>
         </v-container>
         <v-container v-if="taxFormstep === 1">
-          <v-layout align-center v-if="taxType === 0">
+          <v-layout align-center>
             <v-flex xs12 md2>期別</v-flex>
             <v-flex xs12 md2>{{taxListReq.year}}年{{periodTypes[taxListReq.type -1]}}</v-flex>
           </v-layout>

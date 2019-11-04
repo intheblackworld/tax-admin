@@ -42,7 +42,7 @@
             <template v-for="(item, index) in taxCase.filters">
               <v-list-tile :key="item.areaNo" @click="addToSelected(index)">
                 <v-list-tile-content>
-                  <v-list-tile-title v-text="`礦區字號${item.areaNo}`"></v-list-tile-title>
+                  <v-list-tile-title v-text="`${item.areaNo}`"></v-list-tile-title>
                 </v-list-tile-content>
 
                 <v-list-tile-action>
