@@ -14,7 +14,7 @@
     "core-js": "^2.6.5",
     "dayjs": "^1.8.14",
     "jwt-decode": "^2.2.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.13",
     "moment": "^2.24.0",
     "number-to-chinese-words": "^1.0.20",
     "qs": "^6.7.0",
