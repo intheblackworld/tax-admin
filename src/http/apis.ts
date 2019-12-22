@@ -17,22 +17,31 @@ export const deletePeriod = (id: string) =>
 export const getTaxList = (data: {
   year: string
   type: number
-  PaylimitDate: string,
+  PaylimitDate: string
+  CreateTaxDate: string,
 }) =>
   get(
     `/api/tax-list?year=${data.year}&type=${data.type}&PaylimitDate=${
       data.PaylimitDate
-    }`,
+    }&CreateTaxDate=${data.CreateTaxDate}`,
     {},
   )
 // 定期開徵-獲取資料-未繳清
-export const getTaxUnpaidList = (data: { PaylimitDate: string }) =>
-  get(`/api/tax-list-unpaid/${data.PaylimitDate}`, {})
+export const getTaxUnpaidList = (data: { PaylimitDate: string, CreateTaxDate: string }) =>
+  get(`/api/tax-list-unpaid/${data.PaylimitDate}?CreateTaxDate=${data.CreateTaxDate}`, {})
 // 定期開徵作業_定期開徵_新增編輯
 export const createTax = (data: object) => post('/api/tax-add', data)
 // 個案開徵-獲取資料
-export const getTaxCase = (data: { PaylimitDate: string }) =>
-  get(`/api/tax-case/${data.PaylimitDate}`, {})
+export const getTaxCase = (data: {
+  year: string
+  type: number
+  PaylimitDate: string
+  CreateTaxDate: string,
+}) =>
+  get(
+    `/api/tax-case/${data.PaylimitDate}?year=${data.year}&type=${data.type}&CreateTaxDate=${data.CreateTaxDate}`,
+    {},
+  )
 // 列印通知表
 export const addPrint = (data: object) => post('/api/noticerecord-add', data)
 

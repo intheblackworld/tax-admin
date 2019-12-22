@@ -155,7 +155,7 @@ export default class TaxForm extends mixins(CreateMixin) {
   private dateMenu = false
   private createMenu = false
 
-  private periodTypes = ['上期', '上期']
+  private periodTypes = ['上期', '下期']
 
   @Watch('taxListReq.PaylimitDate')
   public onChange(val: string) {
@@ -192,7 +192,7 @@ export default class TaxForm extends mixins(CreateMixin) {
         this.taxListReq.PaylimitDate = `${Number(moment().format('YYYY')) +
           1}-3-31`
         this.taxListReq.CreateTaxDate = `${Number(moment().format('YYYY')) +
-          1}-4-1`
+          1}-3-1`
       }
     }
   }
@@ -223,7 +223,7 @@ export default class TaxForm extends mixins(CreateMixin) {
           this.taxListReq.year
             ? Number(this.taxListReq.year) + 1911 + 1
             : Number(moment().format('YYYY')) + 1
-        }-4-1`
+        }-3-1`
       }
     }
   }
@@ -243,7 +243,7 @@ export default class TaxForm extends mixins(CreateMixin) {
           1}-3-31`
         this.taxListReq.CreateTaxDate = `${Number(this.taxListReq.year) +
           1911 +
-          1}-4-1`
+          1}-3-1`
       }
     }
   }
@@ -253,16 +253,18 @@ export default class TaxForm extends mixins(CreateMixin) {
     const reqDataUnpaid = {
       PaylimitDate: reqData.PaylimitDate,
       CreateTaxDate: reqData.CreateTaxDate,
+      type: reqData.type,
     }
     this.getTaxUnpaidList(reqDataUnpaid)
   }
 
   private getCase(reqData: any) {
-    const reqDataCase = {
+    const reqDataUnpaid = {
       PaylimitDate: reqData.PaylimitDate,
       CreateTaxDate: reqData.CreateTaxDate,
     }
-    this.getTaxCase(reqDataCase)
+    this.getTaxCase(reqData)
+    this.getTaxUnpaidList(reqDataUnpaid)
   }
 
   private submitForm(reqData: any) {

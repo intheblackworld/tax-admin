@@ -137,7 +137,7 @@ export default class History extends mixins(CreateMixin) {
     items: [],
   }
 
-  private sideIndex: any = null
+  private sideIndex: any = 0
 
   private tableOptions: {
     columns: Array<{ title: string; key: string }>
@@ -252,7 +252,7 @@ export default class History extends mixins(CreateMixin) {
       },
       {
         title: '期別',
-        key: 'periodType',
+        key: 'period',
       },
       {
         title: '開單日期',

@@ -173,12 +173,12 @@
                     <div class="col-2">礦業權人</div>
                     <div class="col-4">{{item.miningOwner}}</div>
                     <div class="col-2">繳納期限</div>
-                    <div class="col-4">{{item.paylimitDate}}</div>
+                    <div class="col-4">{{`民國${item.paylimitDate.split('-')[0] - 1911}年${item.paylimitDate.split('-')[1]}月${item.paylimitDate.split('-')[2].slice(0, 2)}日`}}</div>
 
                     <div class="col-2">地址</div>
                     <div class="col-4">{{item.address}}</div>
                     <div class="col-2">礦區面積</div>
-                    <div class="col-4">{{item.area}}</div>
+                    <div class="col-4">{{Math.floor(item.area)}}公畝{{((item.area - Math.floor(item.area)) * 100).toFixed(2)}}公畝</div>
 
                     <div class="col-1">項</div>
                     <div class="col-3">項目</div>
@@ -218,7 +218,7 @@
                       元
                     </div>
                     <div class="desc">
-                      <p style="margin: 0;">
+                      <p style="margin: 0;letter-spacing: 1px;">
                         注意事項：
                         (一)欠繳礦業權費或礦產權利金2年以上者，除依礦業法第38條第3款規定廢止其礦業權之核准外， 其未繳之礦業權費或礦產權利金及依第56條加徵之數額，依法移送強制執行。 (二)
                         <span
@@ -242,6 +242,12 @@
                   <br />
                   {{item.miningOwner}}(代表人)收
                 </h3>
+                <div class="right">
+                  <div class="border">
+                    正貼郵票
+                  </div>
+                  雙掛號郵寄
+                </div>
               </div>
             </div>
           </div>

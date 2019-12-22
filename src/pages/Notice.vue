@@ -229,7 +229,7 @@ export default class Notice extends mixins(CreateMixin) {
         key: 'periodType',
       },
       {
-        title: '開單日期',
+        title: '列印日期',
         key: 'creationDate',
       },
       {

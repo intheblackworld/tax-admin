@@ -84,7 +84,7 @@ export default {
     },
 
     setTaxUnpaidList(
-      state: { taxUnpaidList: {} },
+      state: { taxUnpaidList: {items: [], total: number} },
       data: { items: []; total: number },
     ) {
       state.taxUnpaidList = {
@@ -103,7 +103,7 @@ export default {
     setTaxCase(state: { taxCase: {} }, data: { items: []; total: number }) {
       state.taxCase = {
         items: data.items, // 首次接到所有資料
-        filters: data.items, // 根據條件搜尋過後的資料
+        filters: [...data.items ], // 根據條件搜尋過後的資料
         selected: [], // 選擇了之後加到了表格，下一步用來檢視的資料
         total: data.total,
       }

@@ -39,8 +39,8 @@
             </v-layout>
           </v-form>
           <v-list class="search-list">
-            <template v-for="(item, index) in taxCase.filters">
-              <v-list-tile :key="item.areaNo" @click="addToSelected(index)">
+            <template v-for="(item, index) in [...taxCase.filters, ...taxUnpaidList.items]">
+              <v-list-tile :key="`${index}-${item.areaNo}`" @click="addToSelected(index)">
                 <v-list-tile-content>
                   <v-list-tile-title v-text="`${item.areaNo}`"></v-list-tile-title>
                 </v-list-tile-content>
@@ -49,7 +49,7 @@
                   <v-icon color="gray">add</v-icon>
                 </v-list-tile-action>
               </v-list-tile>
-              <v-divider v-if="index + 1 < taxCase.filters.length" :key="index"></v-divider>
+              <!-- <v-divider v-if="index + 1 < taxCase.filters.length" :key="index"></v-divider> -->
             </template>
           </v-list>
         </v-flex>
@@ -102,6 +102,11 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
     total: number,
   }
 
+  @TaxsModule.State('taxUnpaidList') public taxUnpaidList!: {
+    items: []
+    total: number,
+  }
+
   @TaxsModule.Mutation('setSelected') public setSelected!: (value: {}) => {}
 
   private searchForm = {
@@ -127,7 +132,7 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
       },
       {
         title: '期別',
-        key: 'period',
+        key: 'periodType',
       },
       {
         title: '礦產權利金',
@@ -207,6 +212,7 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
 
       return conditionPass === 3
     })
+    this.taxCase.filters = [...this.taxCase.filters, ...this.taxUnpaidList.items]
 
   }
 
@@ -214,6 +220,8 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
     if (this.selectList.includes(index)) {
       return
     }
+
+    this.taxCase.filters = [...this.taxCase.filters, ...this.taxUnpaidList.items]
 
     this.selectList = [
       ...this.selectList,
