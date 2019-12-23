@@ -178,8 +178,7 @@
                     <div class="col-2">地址</div>
                     <div class="col-4">{{item.address}}</div>
                     <div class="col-2">礦區面積</div>
-                    <div class="col-4">{{Math.floor(item.area)}}公畝{{((item.area - Math.floor(item.area)) * 100).toFixed(2)}}公畝</div>
-
+                    <div class="col-4">{{Math.floor(item.area)}}公畝{{((item.area - Math.floor(item.area)) * 100).toFixed(2)}}公頃{{((item.area - item.area.toFixed(2)) * 1000).toFixed(0)}}公尺</div>
                     <div class="col-1">項</div>
                     <div class="col-3">項目</div>
                     <div class="col-2">金額</div>
