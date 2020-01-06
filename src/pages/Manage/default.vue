@@ -239,7 +239,7 @@
                   </div>
                   <div class="table">
                     <div class="col-2">礦業權人</div>
-                    <div class="col-4">{{item.miningOwner}}</div>
+                    <div class="col-4">{{item.miningOwner}}(代表人)</div>
                     <div class="col-2">繳納期限</div>
                     <div
                       class="col-4"
@@ -248,7 +248,7 @@
                     <div class="col-2">地址</div>
                     <div class="col-4">{{item.address}}</div>
                     <div class="col-2">礦區面積</div>
-                    <div class="col-4">{{Math.floor(item.area)}}公畝{{((item.area - Math.floor(item.area)) * 100).toFixed(2)}}公頃{{((item.area - item.area.toFixed(2)) * 1000).toFixed(0)}}公尺</div>
+                    <div class="col-4">{{Math.floor(item.area)}}公畝{{((item.area - Math.floor(item.area)) * 100).toFixed(0)}}公頃{{((item.area - item.area.toFixed(2)) * 10000).toFixed(0)}}平方公尺</div>
 
                     <div class="col-1">項</div>
                     <div class="col-3">項目</div>

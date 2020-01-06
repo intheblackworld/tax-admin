@@ -104,7 +104,7 @@
       </v-form>
       <v-layout>
         <v-flex md12></v-flex>
-        <v-flex md3 v-if="taxType === 0 && taxFormstep === 0">
+        <v-flex md3 v-if="taxFormstep === 0">
           <v-btn color="info" @click="submitForm(taxListReq)">建立</v-btn>
           <v-btn @click="resetCurrentForm(taxForm)">清除</v-btn>
         </v-flex>
@@ -157,12 +157,12 @@ export default class TaxForm extends mixins(CreateMixin) {
 
   private periodTypes = ['上期', '下期']
 
-  @Watch('taxListReq.PaylimitDate')
-  public onChange(val: string) {
-    if (this.taxType === 1) {
-      this.submitForm(this.taxListReq)
-    }
-  }
+  // @Watch('taxListReq.PaylimitDate')
+  // public onChange(val: string) {
+  //   if (this.taxType === 1) {
+  //     this.submitForm(this.taxListReq)
+  //   }
+  // }
 
   public created() {
     {
@@ -250,21 +250,28 @@ export default class TaxForm extends mixins(CreateMixin) {
 
   private getList(reqData: any) {
     this.getTaxList(reqData)
-    const reqDataUnpaid = {
-      PaylimitDate: reqData.PaylimitDate,
-      CreateTaxDate: reqData.CreateTaxDate,
-      type: reqData.type,
-    }
-    this.getTaxUnpaidList(reqDataUnpaid)
+    // const reqDataUnpaid = {
+    //   PaylimitDate: reqData.PaylimitDate,
+    //   CreateTaxDate: reqData.CreateTaxDate,
+    //   type: reqData.type,
+    // }
+    this.getTaxUnpaidList({
+      ...reqData,
+      IsTaxCase: false,
+    })
   }
 
   private getCase(reqData: any) {
-    const reqDataUnpaid = {
-      PaylimitDate: reqData.PaylimitDate,
-      CreateTaxDate: reqData.CreateTaxDate,
-    }
+    // const reqDataUnpaid = {
+    //   PaylimitDate: reqData.PaylimitDate,
+    //   CreateTaxDate: reqData.CreateTaxDate,
+    //   year: reqData.year,
+    // }
     this.getTaxCase(reqData)
-    this.getTaxUnpaidList(reqDataUnpaid)
+    this.getTaxUnpaidList({
+      ...reqData,
+      IsTaxCase: true,
+    })
   }
 
   private submitForm(reqData: any) {

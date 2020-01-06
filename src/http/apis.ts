@@ -27,8 +27,14 @@ export const getTaxList = (data: {
     {},
   )
 // 定期開徵-獲取資料-未繳清
-export const getTaxUnpaidList = (data: { PaylimitDate: string, CreateTaxDate: string }) =>
-  get(`/api/tax-list-unpaid/${data.PaylimitDate}?CreateTaxDate=${data.CreateTaxDate}`, {})
+export const getTaxUnpaidList = (data: { PaylimitDate: string, CreateTaxDate: string, year: string
+  type: number, IsTaxCase: boolean }) =>
+  get(
+    `/api/tax-list-unpaid/${data.PaylimitDate}?year=${data.year}&type=${data.type}&CreateTaxDate=${
+      data.CreateTaxDate
+    }&IsTaxCase=${data.IsTaxCase}`,
+    {},
+  )
 // 定期開徵作業_定期開徵_新增編輯
 export const createTax = (data: object) => post('/api/tax-add', data)
 // 個案開徵-獲取資料

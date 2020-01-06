@@ -42,7 +42,7 @@
             <template v-for="(item, index) in [...taxCase.filters, ...taxUnpaidList.items]">
               <v-list-tile :key="`${index}-${item.areaNo}`" @click="addToSelected(index)">
                 <v-list-tile-content>
-                  <v-list-tile-title v-text="`${item.areaNo}`"></v-list-tile-title>
+                  <v-list-tile-title v-text="`${item.areaNo} ${item.periodName}`"></v-list-tile-title>
                 </v-list-tile-content>
 
                 <v-list-tile-action>
@@ -132,7 +132,7 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
       },
       {
         title: '期別',
-        key: 'periodType',
+        key: 'periodName',
       },
       {
         title: '礦產權利金',
@@ -181,11 +181,22 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
     // licesenNo: '',
     // miningOwner: '',
     // mineStatus: [],
+    // let list = ''
+    // var len = list.length
+    // var arr = []
+    // var reg = new RegExp(keyWord)
+    // for (var i = 0; i < len; i++) {
+    //   //如果字串中不包含目標字元會返回-1
+    //   if (list[i].match(reg)) {
+    //     arr.push(list[i])
+    //   }
+    //   return arr
+    // }
 
     this.taxCase.filters = this.taxCase.items.filter((item: any) => {
       let conditionPass = 0
       if (this.searchForm.areaNo) {
-        if (item.areaNo === this.searchForm.areaNo) {
+        if (item.areaNo.indexOf(this.searchForm.areaNo)) {
           conditionPass++
         }
       } else {
@@ -193,7 +204,7 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
       }
 
       if (this.searchForm.licesenNo) {
-        if (item.licesenNo === this.searchForm.licesenNo) {
+        if (item.licesenNo.indexOf(this.searchForm.licesenNo)) {
           conditionPass++
         }
       } else {
@@ -201,7 +212,7 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
       }
 
       if (this.searchForm.miningOwner) {
-        if (item.miningOwner === this.searchForm.miningOwner) {
+        if (item.miningOwner.indexOf(this.searchForm.miningOwner)) {
           conditionPass++
         }
       } else {
@@ -210,10 +221,12 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
 
       // @TODO 按照checkbox mineStatus搜尋
 
-      return conditionPass === 3
+      return conditionPass >= 1
     })
-    this.taxCase.filters = [...this.taxCase.filters, ...this.taxUnpaidList.items]
-
+    this.taxCase.filters = [
+      ...this.taxCase.filters,
+      ...this.taxUnpaidList.items,
+    ]
   }
 
   private addToSelected(index: number) {
@@ -221,17 +234,17 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
       return
     }
 
-    this.taxCase.filters = [...this.taxCase.filters, ...this.taxUnpaidList.items]
-
-    this.selectList = [
-      ...this.selectList,
-      index,
+    this.taxCase.filters = [
+      ...this.taxCase.filters,
+      ...this.taxUnpaidList.items,
     ]
 
-    this.setSelected({ key: 'taxCase', data: [
-      ...this.taxCase.selected,
-      this.taxCase.filters[index],
-    ] })
+    this.selectList = [...this.selectList, index]
+
+    this.setSelected({
+      key: 'taxCase',
+      data: [...this.taxCase.selected, this.taxCase.filters[index]],
+    })
   }
 
   private removeFromSelect(index: number) {
