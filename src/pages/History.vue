@@ -190,6 +190,10 @@ export default class History extends mixins(CreateMixin) {
         title: '核減退費金額',
         key: 'refunds',
       },
+      {
+        title: '實際繳納金額',
+        key: 'realMoney', // royalty + mineConcessionFee + fines + interest - refunds
+      },
       // {
       //   title: '繳費日期',
       //   key: 'paymentAmount',

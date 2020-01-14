@@ -17,7 +17,7 @@
   page-break-inside: avoid;
 }
 .print-container .print-item {
-  width: 50%;
+  width: 100%;
   height: calc(830pt / 3);
   display: -webkit-box;
   display: -ms-flexbox;
@@ -124,7 +124,7 @@
   color: #000;
 }
 .print-container .address {
-  width: 50%;
+  width: 100%;
   height: calc(830pt / 3);
   position: relative;
   display: -webkit-box;
@@ -145,4 +145,20 @@
 }
 .print-container .address .center {
   position: relative;
+}
+
+.print-container .address .right {
+  right: 60px;
+  top: 0;
+  text-align: center;
+  position: absolute;
+}
+
+.print-container .address .border {
+  width: 50px;
+  height: 70px;
+  border: 3px solid #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

@@ -113,6 +113,21 @@
               </v-radio-group>
             </v-flex>
           </v-layout>
+          <!-- 多期已繳 -->
+          <v-layout align-center v-if="period.unit1 === 2 && period.unit2 === 1">
+            <v-flex xs12 md1>繳費時間</v-flex>
+            <v-flex xs12 md6>
+              <v-radio-group v-model="paymentStartTime" :mandatory="false">
+                <v-layout align-center>
+                  <TimeRange
+                    title="繳費時間(西元)"
+                    :startDate.sync="period.requests[2].paymentStartTime"
+                    :endDate.sync="period.requests[2].paymentEndTime"
+                  />
+                </v-layout>
+              </v-radio-group>
+            </v-flex>
+          </v-layout>
           <v-flex xs12 md2>
             <v-btn color="primary" @click="handlePrint(period, periodForm)">列印</v-btn>
           </v-flex>
@@ -464,11 +479,15 @@ export default class Report extends Vue {
       {
         year: Number(moment().format('YYYY')),
         periodType: 1,
+        // paymentStartTime: '',
+        // paymentEndTime: '',
       },
       // 多
       {
         startYear: Number(moment().format('YYYY')) - 1,
         endYear: Number(moment().format('YYYY')),
+        paymentStartTime: '',
+        paymentEndTime: '',
         startPeriodType: 1,
         endPeriodType: 1,
       },

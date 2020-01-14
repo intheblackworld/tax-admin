@@ -224,9 +224,87 @@
               v-for="item in printData.items"
               :key="`${item.areaNo}-print`"
             >
+            <div>
               <div
                 class="print-item"
-                v-for="index in 5"
+                v-for="index in 3"
+                :key="`${item.areaNo}-print-item-${index - 1}`"
+              >
+                <p class="hint">{{ticketList[index - 1]}}</p>
+                <div class="content">
+                  <div class="title">經濟部礦業權費及礦產權利金繳納通知單</div>
+                  <div class="title">
+                    <p>礦區字號： {{item.areaNo}}</p>
+                    <p>執照字號：{{item.licesenNo}}</p>
+                    <p>繳費單編號： {{item.number}}</p>
+                  </div>
+                  <div class="table">
+                    <div class="col-2">礦業權人</div>
+                    <div class="col-4">{{item.miningOwner}}(代表人)</div>
+                    <div class="col-2">繳納期限</div>
+                    <div
+                      class="col-4"
+                    >{{`民國${item.paylimitDate.split('-')[0] - 1911}年${item.paylimitDate.split('-')[1]}月${item.paylimitDate.split('-')[2].slice(0, 2)}日`}}</div>
+
+                    <div class="col-2">地址</div>
+                    <div class="col-4">{{item.address}}</div>
+                    <div class="col-2">礦區面積</div>
+                    <div class="col-4">{{Math.floor(item.area)}}公畝{{((item.area - Math.floor(item.area)) * 100).toFixed(0)}}公頃{{((item.area - item.area.toFixed(2)) * 10000).toFixed(0)}}平方公尺</div>
+
+                    <div class="col-1">項</div>
+                    <div class="col-3">項目</div>
+                    <div class="col-2">金額</div>
+                    <div class="col-1">項</div>
+                    <div class="col-3">項目</div>
+                    <div class="col-2">金額</div>
+
+                    <div class="col-1">1</div>
+                    <div class="col-3">{{item.period}}礦業權費</div>
+                    <div class="col-2">{{item.mineConcessionFee}}</div>
+                    <div class="col-1">4</div>
+                    <div class="col-3">利息</div>
+                    <div class="col-2">{{item.interest}}</div>
+
+                    <div class="col-1">2</div>
+                    <div class="col-3">{{item.period}}礦產權利金</div>
+                    <div class="col-2">{{item.royalty}}</div>
+                    <div class="col-1">5</div>
+                    <div class="col-3"></div>
+                    <div class="col-2"></div>
+
+                    <div class="col-1">3</div>
+                    <div class="col-3">滯納金</div>
+                    <div class="col-2">{{item.fines}}</div>
+                    <div class="col-1">6</div>
+                    <div class="col-3">合計</div>
+                    <div class="col-2">{{item.totalPrice}}</div>
+
+                    <div class="col-12">
+                      總計應徵
+                      <span
+                        :key="`money-${index}`"
+                        class="money"
+                        v-for="(string, index) in sum(item.totalPrice)"
+                      >{{string}}</span>
+                      元
+                    </div>
+                    <div class="desc">
+                      <p style="margin: 0;letter-spacing: 1px;">
+                        注意事項：
+                        (一)欠繳礦業權費或礦產權利金2年以上者，除依礦業法第38條第3款規定廢止其礦業權之核准外， 其未繳之礦業權費或礦產權利金及依第56條加徵之數額，依法移送強制執行。 (二)
+                        <span style="font-weight: bold">匯款者請註明礦區字號及礦業權者</span> 戶名：經濟部礦務局 帳號：<span style="font-weight: bold">045037090053</span> 行名：台灣銀行城中分行。 (三)礦業權者如有欠繳礦業權費或礦產權利金之情形，將收到2張以上之繳納通知單，如無法全數繳清，請依欠繳之先後期別依序繳納；倘未依序繳納者，本部礦務局將依礦業權費收費辦法第3條第3項或礦產權利金收費辦法第6條第3項規定，由最先欠繳期別依序抵繳所欠礦業權費或礦產權利金與加徵之數額。
+                      </p>
+                      <img src="../../assets/seal.png" alt />
+                    </div>
+                  </div>
+                </div>
+                <p class="date-hint">請注意繳納時限</p>
+              </div>
+            </div>
+            <div>
+              <div
+                class="print-item"
+                v-for="index in [4, 5]"
                 :key="`${item.areaNo}-print-item-${index - 1}`"
               >
                 <p class="hint">{{ticketList[index - 1]}}</p>
@@ -316,6 +394,7 @@
                   雙掛號郵寄
                 </div>
               </div>
+            </div>
             </div>
           </div>
         </v-layout>

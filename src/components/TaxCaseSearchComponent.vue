@@ -7,7 +7,7 @@
         </v-flex>
       </v-layout>
       <v-layout>
-        <v-flex md3 class="pl-3 pr-5">
+        <v-flex md4 class="pl-3 pr-5">
           <v-form ref="caseForm">
             <v-layout align-center>
               <v-flex xs12 md4>礦區字號</v-flex>
@@ -39,10 +39,10 @@
             </v-layout>
           </v-form>
           <v-list class="search-list">
-            <template v-for="(item, index) in [...taxCase.filters, ...taxUnpaidList.items]">
+            <template v-for="(item, index) in [...taxCase.filters, ...taxUnpaidList.filters]">
               <v-list-tile :key="`${index}-${item.areaNo}`" @click="addToSelected(index)">
                 <v-list-tile-content>
-                  <v-list-tile-title v-text="`${item.areaNo} ${item.periodName}`"></v-list-tile-title>
+                  <v-list-tile-title v-text="`${item.areaNo} ${item.periodName} ${item.miningOwner}`"></v-list-tile-title>
                 </v-list-tile-content>
 
                 <v-list-tile-action>
@@ -53,7 +53,7 @@
             </template>
           </v-list>
         </v-flex>
-        <v-flex md9 class="pt-3">
+        <v-flex md8 class="pt-3">
           <Table
             :table-options="taxCaseOptions"
             :items="taxCase.selected"
@@ -103,7 +103,8 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
   }
 
   @TaxsModule.State('taxUnpaidList') public taxUnpaidList!: {
-    items: []
+    filters: any[]
+    items: any[]
     total: number,
   }
 
@@ -196,7 +197,7 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
     this.taxCase.filters = this.taxCase.items.filter((item: any) => {
       let conditionPass = 0
       if (this.searchForm.areaNo) {
-        if (item.areaNo.indexOf(this.searchForm.areaNo)) {
+        if (item.areaNo.indexOf(this.searchForm.areaNo) >= 0) {
           conditionPass++
         }
       } else {
@@ -204,7 +205,7 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
       }
 
       if (this.searchForm.licesenNo) {
-        if (item.licesenNo.indexOf(this.searchForm.licesenNo)) {
+        if (item.licesenNo.indexOf(this.searchForm.licesenNo) >= 0) {
           conditionPass++
         }
       } else {
@@ -212,7 +213,7 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
       }
 
       if (this.searchForm.miningOwner) {
-        if (item.miningOwner.indexOf(this.searchForm.miningOwner)) {
+        if (item.miningOwner.indexOf(this.searchForm.miningOwner) >= 0) {
           conditionPass++
         }
       } else {
@@ -221,11 +222,43 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
 
       // @TODO 按照checkbox mineStatus搜尋
 
-      return conditionPass >= 1
+      return conditionPass === 3
     })
+
+    this.taxUnpaidList.filters = this.taxUnpaidList.items.filter((item: any) => {
+      let conditionPass = 0
+      if (this.searchForm.areaNo) {
+        if (item.areaNo.indexOf(this.searchForm.areaNo) >= 0) {
+          conditionPass++
+        }
+      } else {
+        conditionPass++
+      }
+
+      if (this.searchForm.licesenNo) {
+        if (item.licesenNo.indexOf(this.searchForm.licesenNo) >= 0) {
+          conditionPass++
+        }
+      } else {
+        conditionPass++
+      }
+
+      if (this.searchForm.miningOwner) {
+        if (item.miningOwner.indexOf(this.searchForm.miningOwner) >= 0) {
+          conditionPass++
+        }
+      } else {
+        conditionPass++
+      }
+
+      // @TODO 按照checkbox mineStatus搜尋
+
+      return conditionPass === 3
+    })
+
     this.taxCase.filters = [
       ...this.taxCase.filters,
-      ...this.taxUnpaidList.items,
+      ...this.taxUnpaidList.filters,
     ]
   }
 
@@ -233,17 +266,16 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
     if (this.selectList.includes(index)) {
       return
     }
-
-    this.taxCase.filters = [
-      ...this.taxCase.filters,
-      ...this.taxUnpaidList.items,
-    ]
+    // this.taxCase.filters = [
+    //   ...this.taxCase.filters,
+    //   ...this.taxUnpaidList.filters,
+    // ]
 
     this.selectList = [...this.selectList, index]
 
     this.setSelected({
       key: 'taxCase',
-      data: [...this.taxCase.selected, this.taxCase.filters[index]],
+      data: [...this.taxCase.selected, [...this.taxCase.filters, ...this.taxUnpaidList.filters][index]],
     })
   }
 

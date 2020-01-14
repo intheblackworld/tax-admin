@@ -39,6 +39,7 @@ export default {
     // 開徵作業-定期開徵-未繳清表格
     taxUnpaidList: {
       items: [],
+      filters: [],
       total: 0,
     },
 
@@ -84,11 +85,12 @@ export default {
     },
 
     setTaxUnpaidList(
-      state: { taxUnpaidList: {items: [], total: number} },
+      state: { taxUnpaidList: {items: [], filters: [], total: number} },
       data: { items: []; total: number },
     ) {
       state.taxUnpaidList = {
         items: data.items,
+        filters: data.items,
         total: data.total,
       }
     },

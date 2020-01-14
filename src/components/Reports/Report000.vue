@@ -16,6 +16,8 @@
         <td align="center" bgcolor="#EEEEEE">礦業權者</td>
         <td align="center" bgcolor="#EEEEEE">礦業<br>權費</td>
         <td align="center" bgcolor="#EEEEEE">礦產<br>權利金</td>
+        <td align="center" bgcolor="#EEEEEE">滯納金</td>
+        <td align="center" bgcolor="#EEEEEE">利息</td>
         <td align="center" bgcolor="#EEEEEE">應徵額</td>
         <td align="center" bgcolor="#EEEEEE">已繳額</td>
         <td align="center" bgcolor="#EEEEEE">欠繳額</td>
@@ -28,6 +30,8 @@
           <td align="left">{{item.miningOwner}}</td>
           <td align="right">{{item.mineConcessionFee}}</td>
           <td align="right">{{item.royalty}}</td>
+          <td align="right">{{item.fines}}</td>
+          <td align="right">{{item.interest}}</td>
           <td align="right">{{item.totalPrice}}</td>
           <td align="right">{{item.actualPay}}</td>
           <td align="right">{{item.unpaidPrice}}</td>

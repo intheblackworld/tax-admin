@@ -4,6 +4,7 @@
       v-model="selected"
       :headers="headers"
       :items="items"
+      :page.sync="page"
       class="elevation-1"
       :select-all="canSelect"
       :item-key="itemKey"
@@ -14,7 +15,8 @@
       <template v-slot:items="props">
         <td v-if="canSelect">
           <v-layout align-center>
-            {{log(props, props.selected)}}
+            <!-- {{log(props, props.selected)}}
+            {{log(page)}}-->
             <v-checkbox v-model="props.selected" primary hide-details></v-checkbox>
             <v-icon v-if="props.item.payStatus === 2" color="rgba(150, 40, 27, 1)">warning</v-icon>
           </v-layout>
@@ -25,7 +27,7 @@
           v-for="(column, index) in tableOptions.columns"
           :key="`${column.key}-${index}`"
         >
-          <span v-if="isEdit && (props.index === currentIndex)">
+          <span v-if="isEdit && (props.index === currentIndex % rowsPerPageItems)">
             <v-select
               v-if="column.key === 'periodType'"
               :items="[{ text: '上期', value: 1,}, { text: '下期', value: 2,}]"
@@ -35,7 +37,7 @@
             ></v-select>
             <span v-else-if="column.key === 'mineStatus'">{{props.item.mineStatus}}</span>
             <span v-else-if="column.key === 'unpaidPrice'">{{props.item.unpaidPrice}}</span>
-            
+
             <v-text-field v-else v-model="currentSendData[column.key]" label></v-text-field>
           </span>
           <span v-else>{{handleDataValue(column, props)}}</span>
@@ -47,7 +49,7 @@
         <td v-if="tableOptions.control" class="text-xs-center">
           <v-btn
             @click="updateRow(props.item[`${name}Id`])"
-            v-if="isEdit && (props.index === currentIndex)"
+            v-if="isEdit && (props.index === currentIndex % rowsPerPageItems)"
           >完成</v-btn>
           <span v-if="tableOptions.control === 'multiple'" style="width: 150px;display:block;">
             <!-- pay all -->
@@ -67,18 +69,21 @@
             <!-- edit -->
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-icon @click="changeEditMode(props.item[`${name}Id`], props.index)" v-on="on">edit</v-icon>
+                <v-icon @click="changeEditMode(props.item[`${name}Id`], props.item)" v-on="on">edit</v-icon>
               </template>
               <span>編輯</span>
             </v-tooltip>
             <!-- go history -->
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
-                <v-icon v-on="on" @click="$router.push(`/history?areaNo=${props.item.areaNo}`)">format_list_bulleted</v-icon>
+                <v-icon
+                  v-on="on"
+                  @click="$router.push(`/history?areaNo=${props.item.areaNo}`)"
+                >format_list_bulleted</v-icon>
               </template>
               <span>歷史繳費記錄</span>
             </v-tooltip>
-            
+
             <!-- payment -->
             <v-tooltip bottom>
               <template v-slot:activator="{ on }">
@@ -86,13 +91,12 @@
               </template>
               <span>催繳通知</span>
             </v-tooltip>
-            
           </span>
           <v-icon
             v-for="(action) in tableOptions.control.split(',')"
             :key="`${props}-${action}-${1}`"
             v-show="action === 'edit' && (props.index !== currentIndex || !isEdit)"
-            @click="changeEditMode(props.item[`${name}Id`], props.index)"
+            @click="changeEditMode(props.item[`${name}Id`], props.item)"
           >edit</v-icon>
           <v-icon
             v-for="(action) in tableOptions.control.split(',')"
@@ -166,6 +170,16 @@ export default class Table extends Vue {
   @Prop(Array) public items!: Array<{}>
   @Prop(Boolean) public canSelect!: boolean
 
+  public page = 1
+
+  // @Watch('items')
+  // public onDataChange(val: number) {
+  //   if (this.items.length == 0) {
+  //     this.loading = true
+  //   } else {
+  //     this.loading = false
+  //   }
+  // }
   @TaxsModule.State('taxList') public taxList!: {
     items: []
     total: number
@@ -215,10 +229,10 @@ export default class Table extends Vue {
     this.$router.push(`user/${personId}`)
   }
 
-  public changeEditMode(id: string, index: number) {
-    this.currentIndex = index
+  public changeEditMode(id: string, item: any) {
+    this.currentIndex = this.items.indexOf(item)
     this.isEdit = true
-    const reqData = this.items[index]
+    const reqData = this.items[this.currentIndex]
     this.currentSendData = reqData as any
   }
 
@@ -274,6 +288,15 @@ export default class Table extends Vue {
       }
     }
 
+    if (column.key === 'realMoney') {
+      value =
+        props.item.royalty +
+        props.item.mineConcessionFee +
+        props.item.fines +
+        props.item.interest -
+        props.item.refunds
+    }
+
     return value
   }
   private payAll(data: any) {
@@ -287,9 +310,9 @@ export default class Table extends Vue {
     this.$emit('showPayment', data)
   }
 
-  private log = (val: any, val2: any) => {
-    // console.log(val, val2)
-  }
+  // private log = (val: any, val2: any) => {
+  //   console.log(val, val2)
+  // }
 
   private updateRow(id: string) {
     // 有 id 代表直接在表格內編輯資料之後，完成就向後端丟資料(ex. 期別管理)
