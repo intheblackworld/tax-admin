@@ -1,0 +1,104 @@
+* {
+  box-sizing: border-box;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+@page { size: auto;  margin: 0mm; }
+
+.report-container {
+  width: 100%;
+  padding: 35px 0px;
+  font-family: serif !important;
+  font-size: 10px;
+  color: #000;
+}
+
+.head {
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.head > div {
+  box-shadow: 0 0 0 0.5px #000;
+  padding: 5px 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.item {
+  display: flex;
+  flex-wrap: wrap;
+  text-align: center;
+}
+
+.item > div {
+  box-shadow: 0 0 0 0.5px #000;
+  /* height: calc(1122px / 43); */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* .refund > div, .taxCase > div {
+  flex: 1 0 calc(100% / 8); 
+} */
+
+.col-1 {
+  flex-grow: 0;
+  flex-basis: calc(100% *1* 1/12);
+}
+.col-2 {
+  flex-grow: 0;
+  flex-basis: calc(100% *2* 1/12);
+}
+.col-3 {
+  flex-grow: 0;
+  flex-basis: calc(100% *3* 1/12);
+}
+.col-4 {
+  flex-grow: 0;
+  flex-basis: calc(100% *4* 1/12);
+}
+.col-5 {
+  flex-grow: 0;
+  flex-basis: calc(100% *5* 1/12);
+}
+.col-6 {
+  flex-grow: 0;
+  flex-basis: calc(100% *6* 1/12);
+}
+.col-7 {
+  flex-grow: 0;
+  flex-basis: calc(100% *7* 1/12);
+}
+.col-8 {
+  flex-grow: 0;
+  flex-basis: calc(100% *8* 1/12);
+}
+.col-9 {
+  flex-grow: 0;
+  flex-basis: calc(100% *9* 1/12);
+}
+.col-10 {
+  flex-grow: 0;
+  flex-basis: calc(100% *10* 1/12);
+}
+.col-11 {
+  flex-grow: 0;
+  flex-basis: calc(100% *11* 1/12);
+}
+.col-12 {
+  flex-grow: 0;
+  flex-basis: calc(100% *12* 1/12);
+}
+
+
