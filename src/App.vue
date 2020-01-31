@@ -13,7 +13,7 @@
                 <span class="CopyRight--text">&copy; &nbsp;</span> <span class="white--text foot-text">2019</span>
                 <v-layout>
                     <v-flex offset-lg11>
-                        <!-- <WebLinker></WebLinker> -->
+                        <WebLinker></WebLinker>
                     </v-flex>
                 </v-layout>
             </v-footer>

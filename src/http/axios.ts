@@ -6,8 +6,10 @@ import QS from 'qs'
 import router from '@/routers'
 import store from '@/store'
 
-const baseURL = 'https://www.kase.com.tw/MOEA_TAX/'
+const devApi = 'https://www.kase.com.tw/MOEA_TAX/'
+const prdApi = 'https://mims.mine.gov.tw/MOEA_TAX'
 
+const baseURL = process.env.NODE_ENV === 'development' ? devApi : prdApi
 // 环境的切换
 // if (process.env.NODE_ENV === 'development') {
 //   axios.defaults.baseURL = '/api'
