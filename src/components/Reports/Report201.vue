@@ -50,6 +50,23 @@
           <td align="right">{{item.totalPrice}}</td>
           <td align="right">{{item.refund}}</td>
         </tr>
+
+        <tr bgcolor="#fff">
+          <td align="right">總計</td>
+          <td align="left"></td>
+          <td align="left"></td>
+          <td align="left"></td>
+          
+          <td align="right">{{data.totalReportPeroid[0].totalMineConcessionFee}}</td>
+          <td align="right">{{data.totalReportPeroid[0].totalMineRoyalty}}</td>
+
+          <!-- <td align="right">{{data.totalFines}}</td>
+          <td align="right">{{data.totalInterest}}</td> -->
+          <td align="right">{{data.totalPrice}}</td>
+          <td align="right">{{data.totalRefund}}</td>
+          <!-- <td align="right">{{data.totalActualPay}}</td>
+          <td align="right">{{data.totalUnpaidPrice}}</td> -->
+        </tr>
       </div>
       <div v-else>
         <td colspan="8" align="center" bgcolor="#EEEEEE">查無資料</td>

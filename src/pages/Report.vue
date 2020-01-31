@@ -117,15 +117,13 @@
           <v-layout align-center v-if="period.unit1 === 2 && period.unit2 === 1">
             <v-flex xs12 md1>繳費時間</v-flex>
             <v-flex xs12 md6>
-              <v-radio-group v-model="paymentStartTime" :mandatory="false">
-                <v-layout align-center>
+              <v-layout align-center>
                   <TimeRange
                     title="繳費時間(西元)"
                     :startDate.sync="period.requests[2].paymentStartTime"
                     :endDate.sync="period.requests[2].paymentEndTime"
                   />
                 </v-layout>
-              </v-radio-group>
             </v-flex>
           </v-layout>
           <v-flex xs12 md2>
@@ -442,7 +440,7 @@ export default class Report extends Vue {
 
   private yearList: Array<{ text: any; value: any }> = []
   private justAllForPeriod: boolean = true
-  private printData: any = { items: [{ reportPeroidTax: [] }], total: 0 }
+  private printData: any = { items: [{ reportPeroidTax: [] }], total: 0, totalReportPeriod: [] }
   // 300 權利金徵收額
   private collectionPriceData: any = {
     collectionPrice: [], // 場交價資料

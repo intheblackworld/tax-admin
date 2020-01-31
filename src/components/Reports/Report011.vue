@@ -97,6 +97,26 @@
           <td align="right">{{item.interest}}</td>
           <td align="right">{{item.actualPay}}</td>
         </tr>
+        <tr bgcolor="#fff">
+          <td align="right">總計</td>
+          <td align="left"></td>
+          <td align="left"></td>
+          <td align="left"></td>
+
+          <div
+            v-for="(period, index) in data.totalReportPeroid"
+            :key="`${index}-${period.periodName}-total-period-td`"
+          >
+            <td align="right">{{period.totalMineConcessionFee}}</td>
+            <td align="right">{{period.totalMineRoyalty}}</td>
+          </div>
+
+          <td align="right">{{data.totalFines}}</td>
+          <td align="right">{{data.totalInterest}}</td>
+          <!-- <td align="right">{{data.totalPrice}}</td> -->
+          <td align="right">{{data.totalActualPay}}</td>
+          <!-- <td align="right">{{data.totalUnpaidPrice}}</td> -->
+        </tr>
       </div>
       <div v-else>
         <td :colspan="4 + data.items[0].reportPeroidTax.length * 2 + 3" align="center" bgcolor="#EEEEEE">查無資料</td>
