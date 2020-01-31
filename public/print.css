@@ -150,7 +150,7 @@
 .print-container .address .right {
   right: 10px;
   font-size: 14px;
-  top: 0;
+  top: 30px;
   text-align: center;
   position: absolute;
 }
