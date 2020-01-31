@@ -102,7 +102,7 @@ export const getNotice = (data: object) =>
   post('/api/noticerecord/search', data)
 
 export const login = () =>
-  post('https://www.kase.com.tw/MOEA_Auth/api/login/', {
+  post(authUrl + 'api/login/', {
     'nameid': 'aallom4j',
     'given_name': 'Adriena Allom',
     'http://schemas.microsoft.com/ws/2008/06/identity/claims/role': [
@@ -117,7 +117,7 @@ export const login = () =>
   })
 
 export const logout = () =>
-  get('https://www.kase.com.tw/MOEA_Auth/api/logout/', {})
+  get(authUrl + 'api/logout/', {})
 
 /* 報表列印 */
 // unit0 + unit1 + unit2 = 000, 010, 012 ......
