@@ -9,7 +9,8 @@ import store from '@/store'
 const devApi = 'https://www.kase.com.tw/MOEA_TAX/'
 const prdApi = 'https://mims.mine.gov.tw/MOEA_TAX'
 
-const baseURL = process.env.NODE_ENV === 'development' ? devApi : prdApi
+// const baseURL = process.env.NODE_ENV === 'development' ? devApi : prdApi
+const baseURL = prdApi
 // 环境的切换
 // if (process.env.NODE_ENV === 'development') {
 //   axios.defaults.baseURL = '/api'

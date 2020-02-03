@@ -10,7 +10,8 @@ const devOuterApi = 'https://www.kase.com.tw/MOEA_MIMS/'
 const prdOuterApi = 'https://mims.mine.gov.tw/MineMIMSBackend/'
 
 
-const authUrl = process.env.NODE_ENV === 'development' ? devApi : prdApi
+// const authUrl = process.env.NODE_ENV === 'development' ? devApi : prdApi
+const authUrl = prdApi;
 const outerUrl = process.env.NODE_ENV === 'development' ? devOuterApi : prdOuterApi
 
 /* 期別管理頁 */
