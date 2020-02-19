@@ -39,7 +39,7 @@ export const getTaxList = (data: {
 // 定期開徵-獲取資料-未繳清
 export const getTaxUnpaidList = (data: {
   PaylimitDate: string, CreateTaxDate: string, year: string
-  type: number, IsTaxCase: boolean
+  type: number, IsTaxCase: boolean,
 }) =>
   get(
     `/api/tax-list-unpaid/${data.PaylimitDate}?year=${data.year}&type=${data.type}&CreateTaxDate=${
@@ -166,6 +166,9 @@ export const getFieldPrice = (data: object) =>
 export const FetchUrlsByUsername = (name: string) =>
   post(`${authUrl}api/AuthorityMember/FetchUrlsByUsername`, { username: name })
 
+// 大宗郵件清冊匯出
+export const getBigMailList = () =>
+  get(`api/bulk-Registered-document`, {})
 // ## 0定期開徵明細
 // ### 0選擇期別: 單期
 // 0全部 /api/report-current-period-tax 000
