@@ -1148,7 +1148,7 @@ export default class Default extends Vue {
 
   private showPayCustomDialog(data: any) {
     this.payCustomDialog = true
-    this.getPayHistory(data.areaNo, data.periodType, data.periodYear)
+    this.getPayHistory(data.no, data.periodType, data.periodYear)
     this.payCustomDialogData = {
       taxId: data.taxId,
       paymentDate: '',
