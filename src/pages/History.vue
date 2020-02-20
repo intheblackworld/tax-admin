@@ -256,7 +256,7 @@ export default class History extends mixins(CreateMixin) {
       },
       {
         title: '期別',
-        key: 'period',
+        key: 'periodType',
       },
       {
         title: '開單日期',
