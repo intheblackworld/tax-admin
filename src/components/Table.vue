@@ -1,129 +1,124 @@
 <template>
-  <div>
-    <v-data-table
-      v-model="selected"
-      :headers="headers"
-      :items="items"
-      :page.sync="page"
-      class="elevation-1"
-      :select-all="canSelect"
-      :item-key="itemKey"
-      no-data-text="查無結果"
-      rows-per-page-text="每頁資料筆數"
-      :rows-per-page-items="take ? take : rowsPerPageItems"
-    >
-      <template v-slot:items="props">
-        <td v-if="canSelect">
-          <v-layout align-center>
-            <!-- {{log(props, props.selected)}}
+    <div>
+        <v-data-table v-model="selected"
+                      :headers="headers"
+                      :items="items"
+                      :page.sync="page"
+                      class="elevation-1"
+                      :select-all="canSelect"
+                      :item-key="itemKey"
+                      no-data-text="查無結果"
+                      rows-per-page-text="每頁資料筆數"
+                      :rows-per-page-items="take ? take : rowsPerPageItems">
+            <template v-slot:items="props">
+                <td v-if="canSelect">
+                    <v-layout align-center>
+                        <!-- {{log(props, props.selected)}}
             {{log(page)}}-->
-            <v-checkbox v-model="props.selected" primary hide-details></v-checkbox>
-            <v-icon v-if="props.item.payStatus === 2" color="rgba(150, 40, 27, 1)">warning</v-icon>
-          </v-layout>
-        </td>
-        <td
-          v-show="column.key !== `${actionKey}Id`"
-          class="text-xs-center"
-          v-for="(column, index) in tableOptions.columns"
-          :key="`${column.key}-${index}`"
-        >
-          <span v-if="isEdit && (props.index === currentIndex % rowsPerPageItems)">
-            <v-select
-              v-if="column.key === 'periodType'"
-              :items="[{ text: '上期', value: 1,}, { text: '下期', value: 2,}]"
-              label="期別"
-              solo
-              v-model="currentSendData[column.key]"
-            ></v-select>
-            <span v-else-if="column.key === 'mineStatus'">{{props.item.mineStatus}}</span>
-            <span v-else-if="column.key === 'unpaidPrice'">{{props.item.unpaidPrice}}</span>
+                        <v-checkbox v-model="props.selected"
+                                    primary
+                                    hide-details></v-checkbox>
+                        <v-icon v-if="props.item.payStatus === 2"
+                                color="rgba(150, 40, 27, 1)">warning</v-icon>
+                    </v-layout>
+                </td>
+                <td v-show="column.key !== `${actionKey}Id`"
+                    class="text-xs-center"
+                    v-for="(column, index) in tableOptions.columns"
+                    :key="`${column.key}-${index}`">
+                    <span v-if="isEdit && (props.index === currentIndex % rowsPerPageItems)">
+                        <v-select v-if="column.key === 'periodType'"
+                                  :items="[{ text: '上期', value: 1,}, { text: '下期', value: 2,}]"
+                                  label="期別"
+                                  solo
+                                  v-model="currentSendData[column.key]"></v-select>
+                        <span v-else-if="column.key === 'mineStatus'">{{props.item.mineStatus}}</span>
+                        <span v-else-if="column.key === 'unpaidPrice'">{{props.item.unpaidPrice}}</span>
 
-            <v-text-field v-else v-model="currentSendData[column.key]" label></v-text-field>
-          </span>
-          <span v-else>{{handleDataValue(column, props)}}</span>
-        </td>
+                        <v-text-field v-else
+                                      v-model="currentSendData[column.key]"
+                                      label></v-text-field>
+                    </span>
+                    <span v-else>{{handleDataValue(column, props)}}</span>
+                </td>
 
-        <!-- <td v-if="tableOptions.control === 'link'" class="text-xs-center">
+                <!-- <td v-if="tableOptions.control === 'link'" class="text-xs-center">
         <v-icon @click="enterProfile(props.item.employeeId)">account_circle</v-icon>
         </td>-->
-        <td v-if="tableOptions.control" class="text-xs-center">
-          <v-btn
-            @click="updateRow(props.item[`${name}Id`])"
-            v-if="isEdit && (props.index === currentIndex % rowsPerPageItems)"
-          >完成</v-btn>
-          <span v-if="tableOptions.control === 'multiple'" style="width: 150px;display:block;">
-            <!-- pay all -->
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-icon @click="payAll(props.item)" v-on="on">money_off</v-icon>
-              </template>
-              <span>結清</span>
-            </v-tooltip>
-            <!-- pay custom -->
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-icon @click="payCustom(props.item)" v-on="on">attach_money</v-icon>
-              </template>
-              <span>登錄繳納紀錄</span>
-            </v-tooltip>
-            <!-- edit -->
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-icon @click="changeEditMode(props.item[`${name}Id`], props.item)" v-on="on">edit</v-icon>
-              </template>
-              <span>編輯</span>
-            </v-tooltip>
-            <!-- go history -->
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-icon
-                  v-on="on"
-                  @click="$router.push(`/history?areaNo=${props.item.areaNo}`)"
-                >format_list_bulleted</v-icon>
-              </template>
-              <span>歷史繳費記錄</span>
-            </v-tooltip>
+                <td v-if="tableOptions.control"
+                    class="text-xs-center">
+                    <v-btn @click="updateRow(props.item[`${name}Id`])"
+                           v-if="isEdit && (props.index === currentIndex % rowsPerPageItems)">完成</v-btn>
+                    <span v-if="tableOptions.control === 'multiple'"
+                          style="width: 150px;display:block;">
+                        <!-- pay all -->
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-icon @click="payAll(props.item)"
+                                        v-on="on">money_off</v-icon>
+                            </template>
+                            <span>結清</span>
+                        </v-tooltip>
+                        <!-- pay custom -->
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-icon @click="payCustom(props.item)"
+                                        v-on="on">attach_money</v-icon>
+                            </template>
+                            <span>登錄繳納紀錄</span>
+                        </v-tooltip>
+                        <!-- edit -->
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-icon @click="changeEditMode(props.item[`${name}Id`], props.item)"
+                                        v-on="on">edit</v-icon>
+                            </template>
+                            <span>編輯</span>
+                        </v-tooltip>
+                        <!-- go history -->
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-icon v-on="on"
+                                        @click="$router.push(`/history?areaNo=${props.item.areaNo}`)">format_list_bulleted</v-icon>
+                            </template>
+                            <span>歷史繳費記錄</span>
+                        </v-tooltip>
 
-            <!-- payment -->
-            <v-tooltip bottom>
-              <template v-slot:activator="{ on }">
-                <v-icon v-on="on" @click="showPayment(props.item)">credit_card</v-icon>
-              </template>
-              <span>催繳通知</span>
-            </v-tooltip>
-          </span>
-          <v-icon
-            v-for="(action) in tableOptions.control.split(',')"
-            :key="`${props}-${action}-${1}`"
-            v-show="action === 'edit' && (props.index !== currentIndex || !isEdit)"
-            @click="changeEditMode(props.item[`${name}Id`], props.item)"
-          >edit</v-icon>
-          <v-icon
-            v-for="(action) in tableOptions.control.split(',')"
-            :key="`${action}-${2}`"
-            v-show="action === 'link'"
-            @click="enterProfile(props.item[`${name}Id`])"
-          >account_circle</v-icon>
-          <v-icon
-            v-for="(action) in tableOptions.control.split(',')"
-            :key="`${action}-${3}`"
-            v-show="action === 'delete'"
-            @click="deleteRow(name === 'tax' ? props.index : props.item[`${name}Id`])"
-          >delete</v-icon>
-          <v-icon
-            v-for="(action) in tableOptions.control.split(',')"
-            :key="`${props}-${action}-${4}`"
-            v-show="action === 'detail'"
-            @click="showDialog(props.item, props.index)"
-          >format_list_bulleted</v-icon>
-        </td>
-      </template>
-    </v-data-table>
-    <v-layout v-if="tableOptions.control.includes('create')" justify-end align-center>
-      新增一筆資料
-      <v-icon @click="createProfile(props.item.employeeId)">add</v-icon>
-    </v-layout>
-  </div>
+                        <!-- payment -->
+                        <v-tooltip bottom>
+                            <template v-slot:activator="{ on }">
+                                <v-icon v-on="on"
+                                        @click="showPayment(props.item)">credit_card</v-icon>
+                            </template>
+                            <span>催繳通知</span>
+                        </v-tooltip>
+                    </span>
+                    <v-icon v-for="(action) in tableOptions.control.split(',')"
+                            :key="`${props}-${action}-${1}`"
+                            v-show="action === 'edit' && (props.index !== currentIndex || !isEdit)"
+                            @click="changeEditMode(props.item[`${name}Id`], props.item)">edit</v-icon>
+                    <v-icon v-for="(action) in tableOptions.control.split(',')"
+                            :key="`${action}-${2}`"
+                            v-show="action === 'link'"
+                            @click="enterProfile(props.item[`${name}Id`])">account_circle</v-icon>
+                    <v-icon v-for="(action) in tableOptions.control.split(',')"
+                            :key="`${action}-${3}`"
+                            v-show="action === 'delete'"
+                            @click="deleteRow(name === 'tax' ? props.index : props.item[`${name}Id`])">delete</v-icon>
+                    <v-icon v-for="(action) in tableOptions.control.split(',')"
+                            :key="`${props}-${action}-${4}`"
+                            v-show="action === 'detail'"
+                            @click="showDialog(props.item, props.index)">format_list_bulleted</v-icon>
+                </td>
+            </template>
+        </v-data-table>
+        <v-layout v-if="tableOptions.control.includes('create')"
+                  justify-end
+                  align-center>
+            新增一筆資料
+            <v-icon @click="createProfile(props.item.employeeId)">add</v-icon>
+        </v-layout>
+    </div>
 </template>
 
 <style lang="scss" scoped>
@@ -276,7 +271,9 @@ export default class Table extends Vue {
               { text: '上期', value: 1 },
               { text: '下期', value: 2 },
             ]
-            value = periodTypeOptions[props.item[column.key] - 1].text
+            if (props.item[column.key]) {
+              value = periodTypeOptions[props.item[column.key] - 1].text
+            }
             break
           case 'hasPaidPrice':
             value = props.item.totalPrice - props.item.unpaidPrice
