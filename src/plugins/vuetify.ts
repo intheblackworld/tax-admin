@@ -8,4 +8,8 @@ Vue.use(Vuetify, {
   VLayout,
   VFlex,
   VImg,
+  theme: {
+    CopyRight: '#35ffbf',
+    Basic: '#3d485a',
+  },
 })

@@ -6,8 +6,10 @@ import QS from 'qs'
 import router from '@/routers'
 import store from '@/store'
 
-const baseURL = 'https://www.kase.com.tw/MOEA_TAX/'
-
+const devApi = 'https://www.kase.com.tw/MOEA_TAX/'
+const prdApi = 'https://mims.mine.gov.tw/MOEA_TAX/'
+// const baseURL = process.env.NODE_ENV === 'development' ? devApi : prdApi
+export const baseURL = prdApi
 // 环境的切换
 // if (process.env.NODE_ENV === 'development') {
 //   axios.defaults.baseURL = '/api'
@@ -19,7 +21,7 @@ const baseURL = 'https://www.kase.com.tw/MOEA_TAX/'
 axios.defaults.baseURL = baseURL
 
 // 请求超时时间
-axios.defaults.timeout = 20000
+axios.defaults.timeout = 40000
 
 // post请求头
 axios.defaults.headers.post['Content-Type'] = 'application/json'

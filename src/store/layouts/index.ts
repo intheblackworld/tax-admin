@@ -1,8 +1,13 @@
 import Vue from 'vue'
 import { login, logout } from '@/http/apis'
 const jwtDecode = require('jwt-decode')
+const devApi = 'https://www.kase.com.tw/'
+const prdApi = 'https://mims.mine.gov.tw/'
+// const baseURL = process.env.NODE_ENV === 'development' ? devApi : prdApi
+const baseURL = prdApi
 
 export default {
+
   namespaced: true,
   state: {
     token: '',
@@ -54,7 +59,7 @@ export default {
           context.commit('setToken', token)
           context.commit('setLoginInfo', decode)
           if (!decode['http://schemas.microsoft.com/ws/2008/06/identity/claims/role'].includes('Tax.Management')) {
-            window.location.href = 'https://www.kase.com.tw/MOEA_Auth/Main'
+            window.location.href = baseURL + 'MOEA_Auth/Main'
           }
           return
         }

@@ -4,6 +4,16 @@ export const getPersonDetail = (employeeId: string) =>
   get(`api/person/${employeeId}`, {})
 export const create = (data: object) => post('/api/person/insert', data)
 
+const devApi = 'https://www.kase.com.tw/MOEA_Auth/'
+const prdApi = 'https://mims.mine.gov.tw/AuthService/'
+const devOuterApi = 'https://www.kase.com.tw/MOEA_MIMS/'
+const prdOuterApi = 'https://mims.mine.gov.tw/MineMIMSBackend/'
+
+
+// const authUrl = process.env.NODE_ENV === 'development' ? devApi : prdApi
+const authUrl = prdApi;
+const outerUrl = process.env.NODE_ENV === 'development' ? devOuterApi : prdOuterApi
+
 /* 期別管理頁 */
 // 搜尋
 export const getPeriods = (data: object) =>
@@ -22,16 +32,18 @@ export const getTaxList = (data: {
 }) =>
   get(
     `/api/tax-list?year=${data.year}&type=${data.type}&PaylimitDate=${
-      data.PaylimitDate
+    data.PaylimitDate
     }&CreateTaxDate=${data.CreateTaxDate}`,
     {},
   )
 // 定期開徵-獲取資料-未繳清
-export const getTaxUnpaidList = (data: { PaylimitDate: string, CreateTaxDate: string, year: string
-  type: number, IsTaxCase: boolean }) =>
+export const getTaxUnpaidList = (data: {
+  PaylimitDate: string, CreateTaxDate: string, year: string
+  type: number, IsTaxCase: boolean,
+}) =>
   get(
     `/api/tax-list-unpaid/${data.PaylimitDate}?year=${data.year}&type=${data.type}&CreateTaxDate=${
-      data.CreateTaxDate
+    data.CreateTaxDate
     }&IsTaxCase=${data.IsTaxCase}`,
     {},
   )
@@ -68,7 +80,7 @@ export const createTaxManage = (data: object) =>
 export const payHistory = (data: { No: string; Type: number; Year: number }) =>
   get(
     `/api/tax/resume/payment-record?No=${data.No}&Type=${data.Type}&Year=${
-      data.Year
+    data.Year
     }`,
     {},
   )
@@ -91,7 +103,7 @@ export const getNotice = (data: object) =>
   post('/api/noticerecord/search', data)
 
 export const login = () =>
-  post('https://www.kase.com.tw/MOEA_Auth/api/login/', {
+  post(authUrl + 'api/login/', {
     'nameid': 'aallom4j',
     'given_name': 'Adriena Allom',
     'http://schemas.microsoft.com/ws/2008/06/identity/claims/role': [
@@ -106,7 +118,7 @@ export const login = () =>
   })
 
 export const logout = () =>
-  get('https://www.kase.com.tw/MOEA_Auth/api/logout/', {})
+  get(authUrl + 'api/logout/', {})
 
 /* 報表列印 */
 // unit0 + unit1 + unit2 = 000, 010, 012 ......
@@ -151,6 +163,12 @@ export const getCollectionPrice = (data: object) =>
 export const getFieldPrice = (data: object) =>
   post('/api/report-field-price', data)
 
+export const FetchUrlsByUsername = (name: string) =>
+  post(`${authUrl}api/AuthorityMember/FetchUrlsByUsername`, { username: name })
+
+// 大宗郵件清冊匯出
+export const getBigMailList = () =>
+  get(`api/bulk-Registered-document`, {})
 // ## 0定期開徵明細
 // ### 0選擇期別: 單期
 // 0全部 /api/report-current-period-tax 000

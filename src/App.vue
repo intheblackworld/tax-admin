@@ -1,15 +1,24 @@
 <template>
-  <div id="app">
-    <v-app id="inspire">
-      <Sidebar :items="items"/>
-      <Header :handleDrawer="() => drawer = !drawer"/>
-      <v-content>
-        <v-container>
-          <router-view></router-view>
-        </v-container>
-      </v-content>
-    </v-app>
-  </div>
+    <div id="app">
+        <v-app id="inspire">
+            <Sidebar :items="items" />
+            <Header :handleDrawer="() => drawer = !drawer" />
+            <v-content>
+                <v-container>
+                    <router-view></router-view>
+                </v-container>
+            </v-content>
+            <v-footer color="Basic"
+                      app>
+                <span class="CopyRight--text">&copy; &nbsp;</span> <span class="white--text foot-text">2019</span>
+                <v-layout>
+                    <v-flex offset-lg11>
+                        <WebLinker></WebLinker>
+                    </v-flex>
+                </v-layout>
+            </v-footer>
+        </v-app>
+    </div>
 </template>
 
 <script lang="ts">
@@ -17,6 +26,8 @@ import { Component, Prop, Vue } from 'vue-property-decorator'
 import { State, Getter, Action, Mutation, namespace } from 'vuex-class'
 import Header from '@/layouts/Header.vue'
 import Sidebar from '@/layouts/Sidebar.vue'
+import WebLinker from '@/plugins/WebLinker.vue'
+
 
 const LayoutsModule = namespace('layouts')
 
@@ -24,6 +35,7 @@ const LayoutsModule = namespace('layouts')
   components: {
     Header,
     Sidebar,
+    WebLinker,
   },
 })
 export default class App extends Vue {
