@@ -25,7 +25,7 @@
         </v-container>
       </v-form>
       <v-btn @click="search">新建</v-btn>
-      <v-btn @click="resetCurrentForm(periodForm)">清除</v-btn>
+      <v-btn @click="resetCurrentForm(historyForm)">清除</v-btn>
     </v-card>
     <v-layout>
       <v-flex md3>
