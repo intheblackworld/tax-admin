@@ -249,7 +249,8 @@
                     <v-spacer></v-spacer>
                 </v-toolbar>
                 <v-layout class="pt-5 pl-5">
-                    <div id="printContent">
+                    <div id="printContent"
+                         v-if="printData.items !== []">
                         <div class="print-container"
                              v-for="item in printData.items"
                              :key="`${item.areaNo}-print`">
@@ -274,9 +275,7 @@
                                             <div class="col-2">地址</div>
                                             <div class="col-4">{{item.address}}</div>
                                             <div class="col-2">礦區面積</div>
-                                            <div
-                                              class="col-4"
-                                            >{{Math.floor(item.area)}}公頃{{item.area.toFixed(4).toString().split('.')[1].slice(0, 2)}}公畝{{area.toFixed(4).toString().split('.')[1].slice(2)}}平方公尺</div>
+                                            <div class="col-4">{{Math.floor(item.area)}}公頃{{item.area.toFixed(4).toString().split('.')[1].slice(0, 2)}}公畝{{item.area.toFixed(4).toString().split('.')[1].slice(2)}}平方公尺</div>
 
                                             <div class="col-1">項</div>
                                             <div class="col-3">項目</div>
@@ -348,9 +347,7 @@
                                             <div class="col-2">地址</div>
                                             <div class="col-4">{{item.address}}</div>
                                             <div class="col-2">礦區面積</div>
-                                            <div
-                                              class="col-4"
-                                            >{{Math.floor(item.area)}}公頃{{item.area.toFixed(4).toString().split('.')[1].slice(0, 2)}}公畝{{area.toFixed(4).toString().split('.')[1].slice(2)}}平方公尺</div>
+                                            <div class="col-4">{{Math.floor(item.area)}}公頃{{item.area.toFixed(4).toString().split('.')[1].slice(0, 2)}}公畝{{item.area.toFixed(4).toString().split('.')[1].slice(2)}}平方公尺</div>
 
                                             <div class="col-1">項</div>
                                             <div class="col-3">項目</div>
@@ -1112,7 +1109,18 @@ export default class Default extends Vue {
   }
 
   private closePaymentDialog() {
-    this.paymentDialogData = []
+    this.paymentDialogData = [
+      {
+        taxId: '',
+        mineConcessionFee: 0,
+        royalty: 0,
+        unpaidPrice: 0,
+        fines: 0,
+        interest: 0,
+        refund: 0,
+        totalPrice: 0,
+      },
+    ]
     this.paymentDialog = false
   }
 
@@ -1175,16 +1183,17 @@ export default class Default extends Vue {
     this.paymentDialogData.splice(index, 1)
   }
 
-  private fetchAndPrint() {
+  private async fetchAndPrint() {
     const taxIdList = this.paymentDialogData.map((item) => item.taxId)
+    await addPrint({ taxId: taxIdList }).then((data: any) => {
+      this.printData = data
+    })
     this.paymentDialog = false
     this.printDialog = true
-    addPrint({ taxId: taxIdList }).then((data: any) => {
-      this.printData = data
-      setTimeout(() => {
-        this.print()
-      }, 2000)
-    })
+    setTimeout(() => {
+      this.print()
+    }, 2000)
+
   }
 
   private print() {
