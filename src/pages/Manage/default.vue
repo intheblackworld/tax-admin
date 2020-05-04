@@ -295,8 +295,8 @@
                                             <div class="col-3">{{item.period}}礦產權利金</div>
                                             <div class="col-2">{{item.royalty}}</div>
                                             <div class="col-1">5</div>
-                                            <div class="col-3"></div>
-                                            <div class="col-2"></div>
+                                            <div class="col-3">已繳金額</div>
+                                            <div class="col-2">{{item.actualPay}}</div>
 
                                             <div class="col-1">3</div>
                                             <div class="col-3">滯納金</div>
@@ -367,8 +367,8 @@
                                             <div class="col-3">{{item.period}}礦產權利金</div>
                                             <div class="col-2">{{item.royalty}}</div>
                                             <div class="col-1">5</div>
-                                            <div class="col-3"></div>
-                                            <div class="col-2"></div>
+                                            <div class="col-3">已繳金額</div>
+                                            <div class="col-2">{{item.actualPay}}</div>
 
                                             <div class="col-1">3</div>
                                             <div class="col-3">滯納金</div>

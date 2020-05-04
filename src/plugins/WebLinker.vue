@@ -90,7 +90,7 @@ export default class WebLinker extends Vue {
   }
   @Watch('info', { deep: true })
   public async onIDChange() {
-    await FetchUrlsByUsername(this.info.given_name).then(
+    await FetchUrlsByUsername(this.info.nameid).then(
       (Response: any) => {
         this.urllist = Response;
       },
