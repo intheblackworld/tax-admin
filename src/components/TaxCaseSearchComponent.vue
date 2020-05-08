@@ -252,14 +252,12 @@ export default class TaxCaseSearchComponent extends mixins(CreateMixin) {
       }
 
       // @TODO 按照checkbox mineStatus搜尋
-
       return conditionPass === 3
     })
-
-    this.taxCase.filters = [
-      ...this.taxCase.filters,
-      ...this.taxUnpaidList.filters,
-    ]
+    // this.taxCase.filters = [
+    //   ...this.taxCase.filters,
+    //   ...this.taxUnpaidList.filters,
+    // ]
   }
 
   private addToSelected(index: number) {
