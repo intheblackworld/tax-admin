@@ -19,8 +19,6 @@
             v-model="startDate"
             @input="startMenu = false;"
             locale="zh-cn"
-            :year-format="handleYear"
-            :header-date-format="handleYear"
           ></v-date-picker>
         </v-menu>
       </v-flex>
@@ -42,8 +40,6 @@
             v-model="endDate"
             @input="endMenu = false"
             locale="zh-cn"
-            :year-format="handleYear"
-            :header-date-format="handleYear"
           ></v-date-picker>
         </v-menu>
       </v-flex>
