@@ -17,7 +17,7 @@
     "lodash": "^4.17.11",
     "moment": "^2.24.0",
     "number-to-chinese-words": "^1.0.20",
-    "qs": "^6.7.0",
+    "qs": "^6.7.3",
     "vue": "^2.6.10",
     "vue-class-component": "^7.0.2",
     "vue-html-to-paper": "^1.1.0",
